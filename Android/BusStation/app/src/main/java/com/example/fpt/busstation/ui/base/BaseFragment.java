@@ -24,10 +24,6 @@ public abstract class BaseFragment extends Fragment implements BaseMvpView {
     //Gán presenter, các thứ trong đây
     protected abstract void onInit(View view);
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(getContentViewResource(), container, false);

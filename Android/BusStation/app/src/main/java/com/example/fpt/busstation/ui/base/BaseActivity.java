@@ -35,18 +35,18 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvpV
     //Gán presenter, các thứ trong đây
     protected abstract void onInit();
 
-    protected abstract void handleInstanceState(Bundle savedInstanceState);
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        handleInstanceState(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(getContentViewResource());
+
         onInit();
     }
-
+    @Override
     public void requestPermissionsSafely(String[] permissions, int requestCode) {
         ActivityCompat.requestPermissions(this,permissions,requestCode);
     }
+    @Override
     public boolean hasPermission(String permission) {
         return ContextCompat.checkSelfPermission(this,permission) == PackageManager.PERMISSION_GRANTED;
     }

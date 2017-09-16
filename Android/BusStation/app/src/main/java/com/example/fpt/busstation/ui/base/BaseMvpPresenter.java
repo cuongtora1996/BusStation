@@ -6,6 +6,5 @@ package com.example.fpt.busstation.ui.base;
 
 public interface BaseMvpPresenter<T extends BaseMvpView> {
     void onAttach(T mvpView);
-
     void onDetach();
 }

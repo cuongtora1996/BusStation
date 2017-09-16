@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">BusStation</string>
     <string name="some_error">Error</string>
+    <string name="google_api_key">AIzaSyA2slThOI8Qecwxo0qL5aENOcCq6iuw6fA</string>
 </resources>

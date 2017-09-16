@@ -8,7 +8,7 @@ import android.view.View;
  */
 
 public abstract class BaseRcvViewHolder extends RecyclerView.ViewHolder {
-    //bind id here
+    //bind button here
     public BaseRcvViewHolder(View itemView) {
         super(itemView);
     }
