@@ -64,7 +64,7 @@ public abstract class BaseRestClient {
     }
     //POST STRING REQUEST
 
-    public void posRequest(String URL_STRING_REQ, final Map<String, String> params, final OnResponseStringListener listener) {
+    public void postRequest(String URL_STRING_REQ, final Map<String, String> params, final OnResponseStringListener listener) {
         // String request
         UTF8StringRequest str = new UTF8StringRequest(Request.Method.POST, URL_STRING_REQ, new Response.Listener<String>() {
             @Override

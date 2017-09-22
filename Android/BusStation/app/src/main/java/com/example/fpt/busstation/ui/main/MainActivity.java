@@ -8,6 +8,8 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PersistableBundle;
@@ -87,7 +89,22 @@ public class MainActivity extends BaseActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         btTest = (Button) findViewById(R.id.btTest);
-        btTest.setOnTouchListener(new View.OnTouchListener() {
+        btTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    MediaPlayer player = new MediaPlayer();
+                    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    player.setDataSource("https://s3-ap-southeast-1.amazonaws.com/text2speech-v4/female.0.pro.0e960997780b92b07ac3820b197178c5.mp3");
+                    player.prepare();
+                    player.start();
+                }
+                catch (Exception e){
+
+                }
+            }
+        });
+        /*btTest.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction()==MotionEvent.ACTION_DOWN){
@@ -117,7 +134,7 @@ public class MainActivity extends BaseActivity implements
                 }
                 return false;
             }
-        });
+        });*/
     }
 
     @Override
