@@ -9,7 +9,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
+import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.service.OnResponseStringListener;
 
 import java.io.UnsupportedEncodingException;
@@ -63,7 +65,7 @@ public abstract class BaseRestClient {
         }
     }
     //POST STRING REQUEST
-
+    //using getParams
     public void postRequest(String URL_STRING_REQ, final Map<String, String> params, final OnResponseStringListener listener) {
         // String request
         UTF8StringRequest str = new UTF8StringRequest(Request.Method.POST, URL_STRING_REQ, new Response.Listener<String>() {
@@ -95,7 +97,48 @@ public abstract class BaseRestClient {
         };
         addToRequestQueue(str, TAG_POST_REQ);
     }
+    //using GetBody
+    public void postAudioRequest(String URL_STRING_REQ, final String text, final OnResponseStringListener listener) {
+        // String request
+        UTF8StringRequest str = new UTF8StringRequest(Request.Method.POST, URL_STRING_REQ, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (listener != null) {
+                    listener.onResponse(response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (listener != null)
+                    listener.onError(error);
+            }
+        }) {
 
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return text == null ? null : text.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", text, "utf-8");
+                    return null;
+                }
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("api_key", getContext().getString(R.string.openfpt_api_key));
+                headers.put("speed","0");
+                headers.put("voice","female");
+                headers.put("prosody","1");
+                headers.put("Cache-Control","no-cache");
+                return headers;
+            }
+        };
+        addToRequestQueue(str, TAG_POST_REQ);
+    }
+    //get Using getUrl
     public void getRequest(final String URL_STRING_REQ, final Map<String,String> params, final OnResponseStringListener listener){
         UTF8StringRequest str = new UTF8StringRequest(Request.Method.GET, URL_STRING_REQ, new Response.Listener<String>() {
             @Override

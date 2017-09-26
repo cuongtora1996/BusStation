@@ -1,6 +1,7 @@
 package com.example.fpt.busstation.ui.main;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
+import android.speech.RecognizerIntent;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +28,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.fpt.busstation.Manifest;
 import com.example.fpt.busstation.R;
@@ -51,6 +54,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 public class MainActivity extends BaseActivity implements
         MainMvpView, OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -59,6 +65,7 @@ public class MainActivity extends BaseActivity implements
 
     private MainMvpPresenter<MainMvpView> mPresenter;
     private Button btTest;
+    private EditText etTest;
     private long mLastClickTime = 0;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -68,6 +75,7 @@ public class MainActivity extends BaseActivity implements
     private static final int PERMISSION_LOCATION = 1;
     private static final int PERMISSION_AUDIO = 2;
     private static final int REQUEST_LOCATION = 1;
+    private static final int REQUEST_SPEECH_INPUT = 2;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("OnCreate","Fire");
@@ -89,21 +97,14 @@ public class MainActivity extends BaseActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         btTest = (Button) findViewById(R.id.btTest);
+        etTest = (EditText) findViewById(R.id.etTest) ;
         btTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    MediaPlayer player = new MediaPlayer();
-                    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    player.setDataSource("https://s3-ap-southeast-1.amazonaws.com/text2speech-v4/female.0.pro.0e960997780b92b07ac3820b197178c5.mp3");
-                    player.prepare();
-                    player.start();
-                }
-                catch (Exception e){
-
-                }
+                startRecognizeSpeech();
             }
         });
+
         /*btTest.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -212,7 +213,18 @@ public class MainActivity extends BaseActivity implements
         Log.d("StopLocationUpdate","Fire");
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
-
+    public void startRecognizeSpeech() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.prompt_speech_input));
+        try {
+            startActivityForResult(intent, REQUEST_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+            showMessage("Not Support Speech");
+        }
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -325,6 +337,12 @@ public class MainActivity extends BaseActivity implements
                     {
                         break;
                     }
+                }
+                break;
+            case REQUEST_SPEECH_INPUT:
+                if (resultCode == RESULT_OK && null != data) {
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    mPresenter.sendRequest(result.get(0));
                 }
                 break;
         }
