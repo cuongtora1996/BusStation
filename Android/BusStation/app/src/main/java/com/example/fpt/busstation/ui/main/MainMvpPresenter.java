@@ -9,4 +9,5 @@ import com.example.fpt.busstation.ui.base.BaseMvpPresenter;
 public interface MainMvpPresenter<T extends MainMvpView> extends BaseMvpPresenter<T> {
     void startRecordAudio();
     void stopRecordAudio();
+    void sendRequest(String text);
 }

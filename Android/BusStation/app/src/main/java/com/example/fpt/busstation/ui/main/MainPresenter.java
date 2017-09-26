@@ -1,13 +1,24 @@
 package com.example.fpt.busstation.ui.main;
 
 import android.Manifest;
+import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.speech.RecognizerIntent;
+import android.util.Log;
 
+import com.android.volley.VolleyError;
+import com.example.fpt.busstation.data.conn.RestClient;
+import com.example.fpt.busstation.service.OnResponseStringListener;
 import com.example.fpt.busstation.ui.base.BasePresenter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -23,6 +34,44 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
         super();
     }
 
+
+
+
+    @Override
+    public void sendRequest(String text){
+            Log.d("String text",text);
+            RestClient.getInstance().postAudioRequest("http://api.openfpt.vn/text2speech/v4", text, new OnResponseStringListener() {
+                @Override
+                public void onResponse(String data) {
+                    try{
+                        JSONObject jsonObject = new JSONObject(data);
+                        int success = jsonObject.getInt("error");
+                        if(success==0){
+                            String url = jsonObject.getString("async");
+                            try {
+                                MediaPlayer player = new MediaPlayer();
+                                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                                player.setDataSource(url);
+                                player.prepare();
+                                player.start();
+                            }
+                            catch (Exception e){
+
+                            }
+                        }
+                    }
+                    catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+
+                }
+            });
+
+    }
     @Override
     public void startRecordAudio() {
         if(checkPermissionAudio()){
