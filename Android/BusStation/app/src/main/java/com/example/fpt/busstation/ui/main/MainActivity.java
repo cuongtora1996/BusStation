@@ -19,6 +19,7 @@ import android.speech.RecognizerIntent;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -33,6 +34,7 @@ import android.widget.EditText;
 import com.example.fpt.busstation.Manifest;
 import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.data.conn.RestClient;
+import com.example.fpt.busstation.service.AnchorSheetBehavior;
 import com.example.fpt.busstation.ui.base.BaseActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -63,6 +65,8 @@ public class MainActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+
+    private AnchorSheetBehavior mBottomSheetBehavior;
     private MainMvpPresenter<MainMvpView> mPresenter;
     private Button btTest;
     private EditText etTest;
@@ -104,7 +108,53 @@ public class MainActivity extends BaseActivity implements
                 startRecognizeSpeech();
             }
         });
+        /*btTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMessage("sendrequest");
+                mPresenter.sendRequest(mLastLocation);
+            }
+        });*/
+        getSupportFragmentManager()
+                .beginTransaction()
+                .disallowAddToBackStack()
+                .add(R.id.bottom_sheet, new TestFragment())
+                .commit();
+        mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
+        mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior.setHideable(false);
+        mBottomSheetBehavior.setPeekHeight(200);
+        mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_HIDDEN);
+        mBottomSheetBehavior.setAnchorSheetCallback(new AnchorSheetBehavior.AnchorSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case AnchorSheetBehavior.STATE_COLLAPSED:
+                        Log.d("BottomSheetBehavior", "State Collapsed");
+                        break;
+                    case AnchorSheetBehavior.STATE_DRAGGING:
+                        Log.d("BottomSheetBehavior", "State Dragging");
+                        break;
+                    case AnchorSheetBehavior.STATE_EXPANDED:
+                        Log.d("BottomSheetBehavior", "State Expanded");
+                        break;
+                    case AnchorSheetBehavior.STATE_HIDDEN:
+                        Log.d("BottomSheetBehavior", "State Hidden");
+                        break;
+                    case AnchorSheetBehavior.STATE_SETTLING:
+                        Log.d("BottomSheetBehavior", "State Settling");
+                        break;
+                    case AnchorSheetBehavior.STATE_ANCHOR:
+                        Log.d("BottomSheetBehavior","State Anchor");
+                        break;
+                }
+            }
 
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
         /*btTest.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -273,8 +323,8 @@ public class MainActivity extends BaseActivity implements
     public void onConnected(@Nullable Bundle bundle) {
         Log.d("OnConnected","Fire");
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(20000);
+        mLocationRequest.setFastestInterval(20000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
 
@@ -342,7 +392,8 @@ public class MainActivity extends BaseActivity implements
             case REQUEST_SPEECH_INPUT:
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    mPresenter.sendRequest(result.get(0));
+                   // showMessage(result.get(0));
+                    mPresenter.sendTTSRequest(result.get(0));
                 }
                 break;
         }
@@ -371,9 +422,20 @@ public class MainActivity extends BaseActivity implements
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bus));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
-
+        mLastLocation = location;
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+    }
+
+    @Override
+    public void placeStation(double lng, double lat, String address) {
+
+        LatLng latLng = new LatLng(lat, lng);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title(address);
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_station));
+        mMap.addMarker(markerOptions);
     }
 }

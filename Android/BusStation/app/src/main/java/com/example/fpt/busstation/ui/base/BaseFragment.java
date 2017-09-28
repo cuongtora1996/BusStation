@@ -3,8 +3,11 @@ package com.example.fpt.busstation.ui.base;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +95,14 @@ public abstract class BaseFragment extends Fragment implements BaseMvpView {
         }
         return false;
     }
-
+    @Override
+    public void requestPermissionsSafely(String[] permissions, int requestCode) {
+        ActivityCompat.requestPermissions(mActivity,permissions,requestCode);
+    }
+    @Override
+    public boolean hasPermission(String permission) {
+        return ContextCompat.checkSelfPermission(mActivity,permission) == PackageManager.PERMISSION_GRANTED;
+    }
     public interface Callback {
 
         void onFragmentAttached();

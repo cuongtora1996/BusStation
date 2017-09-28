@@ -1,6 +1,7 @@
 package com.example.fpt.busstation;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.example.fpt.busstation.data.conn.BaseRestClient;
 
@@ -15,6 +16,7 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG,"here");
         mInstance = this;
     }
     public static synchronized MainApplication getInstance() {

@@ -1,5 +1,7 @@
 package com.example.fpt.busstation.ui.main;
 
+import android.location.Location;
+
 import com.example.fpt.busstation.ui.base.BaseMvpPresenter;
 
 /**
@@ -9,5 +11,6 @@ import com.example.fpt.busstation.ui.base.BaseMvpPresenter;
 public interface MainMvpPresenter<T extends MainMvpView> extends BaseMvpPresenter<T> {
     void startRecordAudio();
     void stopRecordAudio();
-    void sendRequest(String text);
+    void sendTTSRequest(String text);
+    void sendRequest(Location location);
 }
