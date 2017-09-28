@@ -2,6 +2,7 @@ package com.example.fpt.busstation.data.conn;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -31,7 +32,7 @@ public abstract class BaseRestClient {
     public static String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded; charset=UTF-8";
     public static String CONTENT_TYPE_VALUE_JSON = "application/json; charset=utf-8";
     protected RequestQueue mRequestQueue;
-    private static final int TIME_OUT = 10000;
+    private static final int TIME_OUT = 30000;
 
     protected static BaseRestClient mInstance;
     public BaseRestClient() {
@@ -156,6 +157,7 @@ public abstract class BaseRestClient {
         }){
             @Override
             public String getUrl() {
+                Log.d("Here","GetURl");
                 StringBuilder stringBuilder = new StringBuilder(URL_STRING_REQ);
                 int i = 1;
                 for (Map.Entry<String,String> entry: params.entrySet()) {
