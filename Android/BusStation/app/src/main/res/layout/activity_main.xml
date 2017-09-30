@@ -47,12 +47,12 @@
             android:layout_centerHorizontal="true"
             android:id="@+id/btTest"/>
     </RelativeLayout>
-    <android.support.v4.widget.NestedScrollView
+    <FrameLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#EEEEEE"
         android:clipToPadding="true"
         app:layout_behavior="com.example.fpt.busstation.service.AnchorSheetBehavior">
-    </android.support.v4.widget.NestedScrollView>
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>
