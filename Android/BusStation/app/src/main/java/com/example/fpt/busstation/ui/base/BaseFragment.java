@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 
 import com.example.fpt.busstation.util.CommonUtils;
@@ -97,16 +98,27 @@ public abstract class BaseFragment extends Fragment implements BaseMvpView {
     }
     @Override
     public void requestPermissionsSafely(String[] permissions, int requestCode) {
-        ActivityCompat.requestPermissions(mActivity,permissions,requestCode);
+        if (mActivity != null) {
+            mActivity.requestPermissionsSafely(permissions,requestCode);
+        }
     }
     @Override
     public boolean hasPermission(String permission) {
-        return ContextCompat.checkSelfPermission(mActivity,permission) == PackageManager.PERMISSION_GRANTED;
+        if (mActivity != null) {
+             return mActivity.hasPermission(permission);
+        }
+        return false;
     }
     public interface Callback {
 
         void onFragmentAttached();
 
         void onFragmentDetached(String tag);
+    }
+    @Override
+    public void hideKeyboard(){
+        if (mActivity != null) {
+            mActivity.hideKeyboard();
+        }
     }
 }

@@ -24,6 +24,6 @@ public interface BaseMvpView {
     void requestPermissionsSafely(String[] permissions, int requestCode);
 
     boolean hasPermission(String permission);
-
+    void hideKeyboard();
 
 }
