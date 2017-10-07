@@ -1,4 +1,4 @@
-package com.example.fpt.busstation.ui.main;
+package com.example.fpt.busstation.ui.behaviorbottom.TestFragment;
 
 /**
  * Created by cuong on 9/29/2017.
