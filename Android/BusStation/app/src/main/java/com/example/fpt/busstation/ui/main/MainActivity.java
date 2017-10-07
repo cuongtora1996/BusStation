@@ -2,40 +2,26 @@ package com.example.fpt.busstation.ui.main;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.Build;
-import android.os.Handler;
-import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.speech.RecognizerIntent;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.ActivityCompat;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.fpt.busstation.Manifest;
 import com.example.fpt.busstation.R;
-import com.example.fpt.busstation.data.conn.RestClient;
 import com.example.fpt.busstation.service.AnchorSheetBehavior;
 import com.example.fpt.busstation.ui.base.BaseActivity;
+import com.example.fpt.busstation.ui.behaviorbottom.ParentViewPagerFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.TestFragment.TestFirstFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -101,7 +87,6 @@ public class MainActivity extends BaseActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         btTest = (Button) findViewById(R.id.btTest);
-        etTest = (EditText) findViewById(R.id.etTest) ;
         btTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,12 +103,12 @@ public class MainActivity extends BaseActivity implements
         getSupportFragmentManager()
                 .beginTransaction()
                 .disallowAddToBackStack()
-                .add(R.id.bottom_sheet, new TestFragment())
+                .add(R.id.bottom_sheet, new ParentViewPagerFragment() )
                 .commit();
         mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
         mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
-        mBottomSheetBehavior.setHideable(false);
-        mBottomSheetBehavior.setPeekHeight(200);
+        mBottomSheetBehavior.setHideable(true);
+
         mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_HIDDEN);
         mBottomSheetBehavior.setAnchorSheetCallback(new AnchorSheetBehavior.AnchorSheetCallback() {
             @Override
@@ -186,6 +171,7 @@ public class MainActivity extends BaseActivity implements
                 return false;
             }
         });*/
+
     }
 
     @Override
@@ -437,5 +423,11 @@ public class MainActivity extends BaseActivity implements
         markerOptions.title(address);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_station));
         mMap.addMarker(markerOptions);
+    }
+
+    @Override
+    public void showBottomSheet() {
+        mBottomSheetBehavior.setState(mBottomSheetBehavior.STATE_ANCHOR);
+        mBottomSheetBehavior.setPeekHeight(150);
     }
 }

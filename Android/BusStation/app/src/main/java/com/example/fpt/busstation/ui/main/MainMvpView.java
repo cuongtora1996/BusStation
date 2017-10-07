@@ -8,4 +8,5 @@ import com.example.fpt.busstation.ui.base.BaseMvpView;
 
 public interface MainMvpView extends BaseMvpView {
     void placeStation(double lng, double lat, String address);
+    void showBottomSheet();
 }

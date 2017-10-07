@@ -27,15 +27,18 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPagerUtils;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-
+import android.view.ViewParent;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -289,7 +292,10 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
                 !parent.isPointInChildBounds(scroll, (int) event.getX(), (int) event.getY()) &&
                 Math.abs(mInitialY - event.getY()) > mViewDragHelper.getTouchSlop();
     }
-
+    public void invalidateScrollingChild() {
+        final View scrollingChild = findScrollingChild(mViewRef.get());
+        mNestedScrollingChildRef = new WeakReference<>(scrollingChild);
+    }
     @Override
     public boolean onTouchEvent(CoordinatorLayout parent, V child, MotionEvent event) {
         if (!child.isShown()) {
@@ -515,7 +521,7 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
      * @param state One of {@link #STATE_COLLAPSED}, {@link #STATE_EXPANDED}, or
      *              {@link #STATE_HIDDEN}.
      */
-    public final void setState(@State int state) {
+    public final void setState(final @State int state) {
         if (state == mState) {
             return;
         }
@@ -527,10 +533,24 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
             }
             return;
         }
-        V child = mViewRef.get();
+        final V child = mViewRef.get();
         if (child == null) {
             return;
         }
+        ViewParent parent = child.getParent();
+        if (parent != null && parent.isLayoutRequested() && ViewCompat.isAttachedToWindow(child)) {
+            child.post(new Runnable() {
+                @Override
+                public void run() {
+                    startSettlingAnimation(child, state);
+                }
+            });
+        } else {
+            startSettlingAnimation(child, state);
+        }
+
+    }
+    void startSettlingAnimation(View child, int state){
         int top;
         if (state == STATE_COLLAPSED) {
             top = mMaxOffset;
@@ -552,7 +572,6 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
             ViewCompat.postOnAnimation(child, new SettleRunnable(child, state));
         }
     }
-
     /**
      * Gets the current state of the bottom sheet.
      *
@@ -596,7 +615,14 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
         if (view instanceof NestedScrollingChild) {
             return view;
         }
-        if (view instanceof ViewGroup) {
+        if (view instanceof ViewPager) {
+            ViewPager viewPager = (ViewPager) view;
+            View currentViewPagerChild = ViewPagerUtils.getCurrentView(viewPager);
+            View scrollingChild = findScrollingChild(currentViewPagerChild);
+            if (scrollingChild != null) {
+                return scrollingChild;
+            }
+        } else if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;
             for (int i = 0, count = group.getChildCount(); i < count; i++) {
                 View scrollingChild = findScrollingChild(group.getChildAt(i));
@@ -773,6 +799,7 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     @SuppressWarnings("unchecked")
     public static <V extends View> AnchorSheetBehavior<V> from(V view) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
+
         if (!(params instanceof CoordinatorLayout.LayoutParams)) {
             throw new IllegalArgumentException("The view is not a child of CoordinatorLayout");
         }

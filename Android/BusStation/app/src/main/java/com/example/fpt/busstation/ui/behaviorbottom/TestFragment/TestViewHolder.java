@@ -1,4 +1,4 @@
-package com.example.fpt.busstation.ui.main;
+package com.example.fpt.busstation.ui.behaviorbottom.TestFragment;
 
 import android.support.v7.widget.CardView;
 import android.view.View;
