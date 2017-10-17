@@ -108,8 +108,8 @@ public class MainActivity extends BaseActivity implements
         mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
         mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
         mBottomSheetBehavior.setHideable(true);
-
-        mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_HIDDEN);
+        mBottomSheetBehavior.setPeekHeight(120);
+        mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_ANCHOR);
         mBottomSheetBehavior.setAnchorSheetCallback(new AnchorSheetBehavior.AnchorSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
