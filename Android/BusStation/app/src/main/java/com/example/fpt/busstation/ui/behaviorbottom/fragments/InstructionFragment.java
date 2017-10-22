@@ -25,6 +25,15 @@ import java.util.List;
 public class InstructionFragment extends BaseFragment implements BaseRcvAdapter.OnItemListener {
     RecyclerView recyclerView;
     RouteInstructionAdapter adapter;
+    List<Object> listDto;
+
+    public List<Object> getListDto() {
+        return listDto;
+    }
+
+    public void setListDto(List<Object> listDto) {
+        this.listDto = listDto;
+    }
 
     public InstructionFragment() {
     }
@@ -37,21 +46,6 @@ public class InstructionFragment extends BaseFragment implements BaseRcvAdapter.
     @Override
     protected void onInit(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_instruction);
-        List<Object> listDto = new ArrayList<>();
-        listDto.add(new WalkInstructionDto(1, 1, 2,
-                new CoordDto(10.768116, 106.688573, "FPT University"),
-                new CoordDto(10.767676, 106.689362, "Station 1"),
-                12, 200, 18));
-        List<RouteDto> listRoute = new ArrayList<RouteDto>();
-        listRoute.add(new RouteDto(1, 10.767676, 106.689362, "Station 1"));
-        listRoute.add(new RouteDto(1, 10.76767, 106.690941, "Station 2"));
-        listRoute.add(new RouteDto(2, 10.76767635, 106.68936157, ""));
-        listRoute.add(new RouteDto(1, 10.768788, 106.693699, "Station 3"));
-        listDto.add(new BusRouteInstructionDto(2, listRoute, "#41ba34", 18, 30, 10000));
-        listDto.add(new WalkInstructionDto(1, 2, 3,
-                new CoordDto(10.769504, 106.695587, "Station 4"),
-                new CoordDto(10.770937, 106.697164, "My Home"),
-                9, 150));
         adapter = new RouteInstructionAdapter(listDto, this.getContext());
         adapter.setmListener(this);
         RecyclerView.LayoutManager layoutManager = new
@@ -64,6 +58,10 @@ public class InstructionFragment extends BaseFragment implements BaseRcvAdapter.
     @Override
     public void onItemClick(View view, Object data, int position) {
         Log.d("OnItemClick", "onItemCLick");
+    }
+
+    public void changeInstruction(List<Object> dtos){
+        adapter.changeItems(dtos);
     }
 }
 

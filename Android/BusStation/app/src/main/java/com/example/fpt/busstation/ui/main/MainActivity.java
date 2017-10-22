@@ -10,6 +10,7 @@ import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
@@ -63,6 +64,7 @@ public class MainActivity extends BaseActivity implements
     private Location mLastLocation;
     private Marker mCurrLocationMarker;
     private LocationRequest mLocationRequest;
+    private FloatingActionButton mFab;
     private static final int PERMISSION_LOCATION = 1;
     private static final int PERMISSION_AUDIO = 2;
     private static final int REQUEST_LOCATION = 1;
@@ -95,6 +97,7 @@ public class MainActivity extends BaseActivity implements
                 startRecognizeSpeech();
             }
         });
+        mFab= (FloatingActionButton)findViewById(R.id.fab);
 
 //        btTest.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -118,17 +121,13 @@ public class MainActivity extends BaseActivity implements
         mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
         mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
         mBottomSheetBehavior.setHideable(true);
-        mBottomSheetBehavior.setPeekHeight(120);
-        mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_ANCHOR);
         mBottomSheetBehavior.setAnchorSheetCallback(new AnchorSheetBehavior.AnchorSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case AnchorSheetBehavior.STATE_COLLAPSED:
-                        Log.d("BottomSheetBehavior", "State Collapsed");
                         break;
                     case AnchorSheetBehavior.STATE_DRAGGING:
-                        Log.d("BottomSheetBehavior", "State Dragging");
                         break;
                     case AnchorSheetBehavior.STATE_EXPANDED:
                         Log.d("BottomSheetBehavior", "State Expanded");
@@ -147,7 +146,12 @@ public class MainActivity extends BaseActivity implements
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
+            }
+        });
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomSheet();
             }
         });
         /*btTest.setOnTouchListener(new View.OnTouchListener() {
@@ -437,6 +441,6 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void showBottomSheet() {
         mBottomSheetBehavior.setState(mBottomSheetBehavior.STATE_ANCHOR);
-        mBottomSheetBehavior.setPeekHeight(150);
+        mBottomSheetBehavior.setPeekHeight(120);
     }
 }

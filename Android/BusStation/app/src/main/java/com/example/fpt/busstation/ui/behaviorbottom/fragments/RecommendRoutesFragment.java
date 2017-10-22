@@ -22,6 +22,26 @@ import java.util.List;
 public class RecommendRoutesFragment extends BaseFragment implements BaseRcvAdapter.OnItemListener {
     RecyclerView recyclerView;
     RecommendRoutesAdapter adapter;
+    Callback callback;
+
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    public List<RecommendRoutesDto> getList() {
+        return list;
+    }
+
+    public void setList(List<RecommendRoutesDto> list) {
+        this.list = list;
+    }
+
+    List<RecommendRoutesDto> list;
+
 
     @Override
     protected int getContentViewResource() {
@@ -31,37 +51,7 @@ public class RecommendRoutesFragment extends BaseFragment implements BaseRcvAdap
     @Override
     protected void onInit(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_route_recommend);
-        List<RecommendRoutesDto> list = new ArrayList<>();
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 55-18", 112, 90, 2, "55, 18"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 01-19-20", 112, 90, 3, "01, 19, 20"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-04-25", 112, 90, 3, "18, 04, 25"));
-        list.add(new RecommendRoutesDto("Tuyen duong 139-32", 112, 90, 2, "139, 32"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 55-18", 112, 90, 2, "55, 18"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 01-19-20", 112, 90, 3, "01, 19, 20"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-04-25", 112, 90, 3, "18, 04, 25"));
-        list.add(new RecommendRoutesDto("Tuyen duong 139-32", 112, 90, 2, "139, 32"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 55-18", 112, 90, 2, "55, 18"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 01-19-20", 112, 90, 3, "01, 19, 20"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-04-25", 112, 90, 3, "18, 04, 25"));
-        list.add(new RecommendRoutesDto("Tuyen duong 139-32", 112, 90, 2, "139, 32"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 55-18", 112, 90, 2, "55, 18"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 01-19-20", 112, 90, 3, "01, 19, 20"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-04-25", 112, 90, 3, "18, 04, 25"));
-        list.add(new RecommendRoutesDto("Tuyen duong 139-32", 112, 90, 2, "139, 32"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 55-18", 112, 90, 2, "55, 18"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
-        list.add(new RecommendRoutesDto("Tuyen duong 01-19-20", 112, 90, 3, "01, 19, 20"));
-        list.add(new RecommendRoutesDto("Tuyen duong 18-04-25", 112, 90, 3, "18, 04, 25"));
-        list.add(new RecommendRoutesDto("Tuyen duong 139-32", 112, 90, 2, "139, 32"));
+
         adapter = new RecommendRoutesAdapter(list, this.getContext());
         adapter.setmListener(this);
         recyclerView.setAdapter(adapter);
@@ -74,6 +64,9 @@ public class RecommendRoutesFragment extends BaseFragment implements BaseRcvAdap
 
     @Override
     public void onItemClick(View view, Object data, int position) {
-        Log.d("OnItemClick", ((RecommendRoutesDto) data).getRecommendRouteId());
+        callback.changeInstruction(position);
+    }
+    public interface Callback {
+        void changeInstruction(int position);
     }
 }

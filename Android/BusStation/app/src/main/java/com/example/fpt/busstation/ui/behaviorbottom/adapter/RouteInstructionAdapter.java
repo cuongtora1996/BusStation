@@ -102,4 +102,9 @@ public class RouteInstructionAdapter extends BaseRcvAdapter {
         }
         return -1;
     }
+
+    public void changeItems(List<Object> dtos){
+        lstDto = dtos;
+        notifyDataSetChanged();
+    }
 }
