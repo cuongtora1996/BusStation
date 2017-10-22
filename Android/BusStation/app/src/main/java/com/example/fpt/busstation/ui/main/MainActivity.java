@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.service.AnchorSheetBehavior;
@@ -54,7 +55,7 @@ public class MainActivity extends BaseActivity implements
 
     private AnchorSheetBehavior mBottomSheetBehavior;
     private MainMvpPresenter<MainMvpView> mPresenter;
-    private Button btTest;
+    private ImageView recordImgView;
     private EditText etTest;
     private long mLastClickTime = 0;
     private GoogleMap mMap;
@@ -66,9 +67,10 @@ public class MainActivity extends BaseActivity implements
     private static final int PERMISSION_AUDIO = 2;
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_SPEECH_INPUT = 2;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("OnCreate","Fire");
+        Log.d("OnCreate", "Fire");
         super.onCreate(savedInstanceState);
 
     }
@@ -80,19 +82,27 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     protected void onInit() {
-        Log.d("OnInit","Fire");
+        Log.d("OnInit", "Fire");
         mPresenter = new MainPresenter<>();
         mPresenter.onAttach(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        btTest = (Button) findViewById(R.id.btTest);
-        btTest.setOnClickListener(new View.OnClickListener() {
+        recordImgView = (ImageView) findViewById(R.id.recordImgView);
+        recordImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startRecognizeSpeech();
             }
         });
+
+//        btTest.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startRecognizeSpeech();
+//            }
+//        });
+
         /*btTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +113,7 @@ public class MainActivity extends BaseActivity implements
         getSupportFragmentManager()
                 .beginTransaction()
                 .disallowAddToBackStack()
-                .add(R.id.bottom_sheet, new ParentViewPagerFragment() )
+                .add(R.id.bottom_sheet, new ParentViewPagerFragment())
                 .commit();
         mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
         mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
@@ -130,7 +140,7 @@ public class MainActivity extends BaseActivity implements
                         Log.d("BottomSheetBehavior", "State Settling");
                         break;
                     case AnchorSheetBehavior.STATE_ANCHOR:
-                        Log.d("BottomSheetBehavior","State Anchor");
+                        Log.d("BottomSheetBehavior", "State Anchor");
                         break;
                 }
             }
@@ -176,23 +186,23 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("OnMapReady","Fire");
+        Log.d("OnMapReady", "Fire");
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.d("===========>Prepare","BuildGoogleApiClient");
+            Log.d("===========>Prepare", "BuildGoogleApiClient");
             buildGoogleApiClient();
         } else {
-            Log.d("===========>Prepare","RequestPermissionSafely");
-            requestPermissionsSafely(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},PERMISSION_LOCATION);
+            Log.d("===========>Prepare", "RequestPermissionSafely");
+            requestPermissionsSafely(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d("OnRequestPermission","Fire");
-        switch (requestCode){
+        Log.d("OnRequestPermission", "Fire");
+        switch (requestCode) {
             case PERMISSION_LOCATION:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -200,35 +210,34 @@ public class MainActivity extends BaseActivity implements
                     // permission was granted, yay!
                     if (ContextCompat.checkSelfPermission(this,
                             android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        Log.d("=======>RequestLocation","Granted");
-                        Log.d("=============>Prepare","BuildGoogleApiClient");
+                        Log.d("=======>RequestLocation", "Granted");
+                        Log.d("=============>Prepare", "BuildGoogleApiClient");
                         buildGoogleApiClient();
                     }
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     showMessage("Permission Denied");
-                    Log.d("=======>RequestLocation","Denied");
+                    Log.d("=======>RequestLocation", "Denied");
                     finish();
                 }
                 break;
             case PERMISSION_AUDIO:
-                if(grantResults.length>0
+                if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay!
-                    Log.d("=======>RequestAudio","Granted");
+                    Log.d("=======>RequestAudio", "Granted");
                     showMessage("Vui lòng ấn nút để ghi âm");
-                }
-                else{
+                } else {
                     showMessage("Permission Denied");
-                    Log.d("=======>RequestAudio","Denied");
+                    Log.d("=======>RequestAudio", "Denied");
                 }
         }
     }
 
     protected synchronized void buildGoogleApiClient() {
-        Log.d("BuildGoogleApiClient","Fire");
+        Log.d("BuildGoogleApiClient", "Fire");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -236,19 +245,22 @@ public class MainActivity extends BaseActivity implements
                 .build();
         mGoogleApiClient.connect();
     }
-    protected void startLocationUpdate(){
-        Log.d("StartLocationUpdate","Fire");
+
+    protected void startLocationUpdate() {
+        Log.d("StartLocationUpdate", "Fire");
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.d("======>","RequestLocationUpdates");
+            Log.d("======>", "RequestLocationUpdates");
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
     }
-    protected void stopLocationUpdate(){
-        Log.d("StopLocationUpdate","Fire");
+
+    protected void stopLocationUpdate() {
+        Log.d("StopLocationUpdate", "Fire");
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
+
     public void startRecognizeSpeech() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -261,12 +273,13 @@ public class MainActivity extends BaseActivity implements
             showMessage("Not Support Speech");
         }
     }
+
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("OnStart","Fire");
-        if(mGoogleApiClient!=null){
-            Log.d("======>","PrepareConnectGoogleAPIClient");
+        Log.d("OnStart", "Fire");
+        if (mGoogleApiClient != null) {
+            Log.d("======>", "PrepareConnectGoogleAPIClient");
             mGoogleApiClient.connect();
         }
     }
@@ -274,9 +287,9 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d("OnStop","Fire");
-        if(mGoogleApiClient!=null){
-            Log.d("======>","PrepareDisconnectGoogleAPIClient");
+        Log.d("OnStop", "Fire");
+        if (mGoogleApiClient != null) {
+            Log.d("======>", "PrepareDisconnectGoogleAPIClient");
             mGoogleApiClient.disconnect();
         }
     }
@@ -284,9 +297,9 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("OnPause","Fire");
-        if(mGoogleApiClient!=null)
-            if(mGoogleApiClient.isConnected()) {
+        Log.d("OnPause", "Fire");
+        if (mGoogleApiClient != null)
+            if (mGoogleApiClient.isConnected()) {
                 Log.d("======>", "PrepareStopLocationUpdate");
                 stopLocationUpdate();
             }
@@ -295,9 +308,9 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("OnResume","Fire");
-        if(mGoogleApiClient!=null)
-            if(mGoogleApiClient.isConnected()){
+        Log.d("OnResume", "Fire");
+        if (mGoogleApiClient != null)
+            if (mGoogleApiClient.isConnected()) {
                 Log.d("======>", "PrepareStartLocationUpdate");
                 startLocationUpdate();
 
@@ -307,7 +320,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d("OnConnected","Fire");
+        Log.d("OnConnected", "Fire");
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(20000);
         mLocationRequest.setFastestInterval(20000);
@@ -347,30 +360,25 @@ public class MainActivity extends BaseActivity implements
         });
 
     }
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("onActivityResult()", Integer.toString(resultCode));
 
         //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
-        switch (requestCode)
-        {
+        switch (requestCode) {
             case REQUEST_LOCATION:
-                switch (resultCode)
-                {
-                    case Activity.RESULT_OK:
-                    {
+                switch (resultCode) {
+                    case Activity.RESULT_OK: {
                         // All required changes were successfully made
                         break;
                     }
-                    case Activity.RESULT_CANCELED:
-                    {
+                    case Activity.RESULT_CANCELED: {
                         // The user was asked to change settings, but chose not to
                         finish();
                         break;
                     }
-                    default:
-                    {
+                    default: {
                         break;
                     }
                 }
@@ -378,12 +386,13 @@ public class MainActivity extends BaseActivity implements
             case REQUEST_SPEECH_INPUT:
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                   // showMessage(result.get(0));
+                    // showMessage(result.get(0));
                     mPresenter.sendTTSRequest(result.get(0));
                 }
                 break;
         }
     }
+
     @Override
     public void onConnectionSuspended(int i) {
 
@@ -396,7 +405,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("OnLocationChanged","Fire");
+        Log.d("OnLocationChanged", "Fire");
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }

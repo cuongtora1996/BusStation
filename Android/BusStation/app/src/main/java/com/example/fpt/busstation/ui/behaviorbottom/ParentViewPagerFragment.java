@@ -16,9 +16,12 @@ public class ParentViewPagerFragment extends BaseFragment {
     ViewPager viewPager;
     ParentPagerAdapter pagerAdapter;
     TabLayout tabLayout;
+    String typeRequest = "route";
+
     public ParentViewPagerFragment() {
         // Required empty public constructor
     }
+
     @Override
     protected int getContentViewResource() {
         return R.layout.fragment_parent_viewpager;
@@ -26,12 +29,22 @@ public class ParentViewPagerFragment extends BaseFragment {
 
     @Override
     protected void onInit(View view) {
+
         viewPager = (ViewPager) view.findViewById(R.id.vpPager);
         tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
         pagerAdapter = new ParentPagerAdapter(getChildFragmentManager());
         pagerAdapter.setCount(2);
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_bus));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_station));
+        //FIXME: Vi
+        if (typeRequest.equals("route")) {
+            tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_location));
+            tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_compass));
+        } else {
+            tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_bus));
+            tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_station));
+        }
+//         end temp
+//        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_bus));
+//        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_station));
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
 
