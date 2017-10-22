@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 
 public abstract class BaseRcvAdapter extends RecyclerView.Adapter {
     protected OnItemListener mListener;
-    public void setmListener(OnItemListener mListener){
-        this.mListener=mListener;
+
+    public void setmListener(OnItemListener mListener) {
+        this.mListener = mListener;
     }
+
     public interface OnItemListener {
         void onItemClick(View view, Object data, final int position);
     }

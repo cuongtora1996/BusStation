@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+
+        android:id="@+id/cvRoute"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
+        card_view:cardBackgroundColor="@color/transparent"
+        card_view:cardCornerRadius="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tuyến đường đề xuất"
+                android:textSize="16dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tvDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:text="   ? \n phút"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:id="@+id/gridRoute"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@+id/tvDuration"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/tvDuration"
+                    android:columnCount="4">
+
+                    <TextView
+                        android:id="@+id/tvRouteId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="0"
+                        android:layout_columnSpan="4"
+                        android:layout_row="0"
+                        android:text="Tuyến đường 18 - 24"
+                        android:textSize="16dp" />
+
+                    <ImageView
+                        android:id="@+id/ivPerson"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_column="0"
+                        android:layout_gravity="center_vertical"
+                        android:layout_row="1"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_person"></ImageView>
+
+                    <TextView
+                        android:id="@+id/tvPersonDistance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="30dp"
+                        android:layout_row="1"
+                        android:text="150 m"
+                        android:textSize="18dp" />
+
+                    <ImageView
+                        android:id="@+id/ivBus"
+
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_column="2"
+                        android:layout_gravity="center_vertical"
+                        android:layout_row="1"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_bus_icon"></ImageView>
+
+                    <TextView
+                        android:id="@+id/tvBusDistance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:layout_gravity="center_vertical"
+                        android:layout_row="1"
+                        android:text="150 m"
+                        android:textSize="18dp" />
+                </GridLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

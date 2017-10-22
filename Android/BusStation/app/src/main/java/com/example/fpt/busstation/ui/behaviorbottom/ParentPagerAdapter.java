@@ -4,8 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.example.fpt.busstation.ui.behaviorbottom.TestFragment.TestFirstFragment;
-import com.example.fpt.busstation.ui.behaviorbottom.TestFragment.TestSecondFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.fragments.BusFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.fragments.InstructionFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.fragments.RecommendRoutesFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.fragments.StationFragment;
 
 /**
  * Created by cuong on 10/5/2017.
@@ -23,9 +25,12 @@ public class ParentPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new TestFirstFragment();
+//                return new BusFragment();
+                return new RecommendRoutesFragment();
             case 1:
-                return new TestSecondFragment();
+
+//                return new StationFragment();
+                return new InstructionFragment();
             default:
                 return null;
         }
