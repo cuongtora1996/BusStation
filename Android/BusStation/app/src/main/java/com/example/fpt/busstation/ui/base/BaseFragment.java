@@ -106,6 +106,7 @@ public abstract class BaseFragment extends Fragment implements BaseMvpView {
     public boolean hasPermission(String permission) {
         if (mActivity != null) {
              return mActivity.hasPermission(permission);
+
         }
         return false;
     }
