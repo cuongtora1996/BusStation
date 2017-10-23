@@ -2,7 +2,6 @@ package com.example.fpt.busstation.ui.behaviorbottom;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 
 import com.example.fpt.busstation.R;
@@ -23,15 +22,15 @@ import java.util.List;
  * Created by cuong on 10/5/2017.
  */
 
-public class ParentViewPagerFragment extends BaseFragment implements RecommendRoutesFragment.Callback {
+public class RouteInstructionViewPagerFragment extends BaseFragment implements RecommendRoutesFragment.Callback {
     ViewPager viewPager;
-    ParentPagerAdapter pagerAdapter;
+    RouteInstructionPagerAdapter pagerAdapter;
     TabLayout tabLayout;
-    String typeRequest = "route";
     RecommendRoutesFragment recommendRoutesFragment;
     InstructionFragment instructionFragment;
     List<RecommendRoutesDto> recommendRoutes;
     List<Object> routeInstructions;
+
     public List<RecommendRoutesDto> getRecommendRoutes() {
         return recommendRoutes;
     }
@@ -49,20 +48,20 @@ public class ParentViewPagerFragment extends BaseFragment implements RecommendRo
     }
 
 
-    public ParentViewPagerFragment() {
+    public RouteInstructionViewPagerFragment() {
         // Required empty public constructor
     }
 
     @Override
     protected int getContentViewResource() {
-        return R.layout.fragment_parent_viewpager;
+        return R.layout.parent_viewpager_route_instruction;
     }
 
     @Override
     protected void onInit(View view) {
         generateListOffline();
-        viewPager = (ViewPager) view.findViewById(R.id.vpPager);
-        tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        viewPager = (ViewPager) view.findViewById(R.id.vpRouteInstruction);
+        tabLayout = (TabLayout) view.findViewById(R.id.tlRouteInstruction);
         //Cường
         recommendRoutesFragment = new RecommendRoutesFragment();
         recommendRoutesFragment.setList(getRecommendRoutes());
@@ -71,19 +70,12 @@ public class ParentViewPagerFragment extends BaseFragment implements RecommendRo
         instructionFragment = new InstructionFragment();
         instructionFragment.setListDto((List<Object>) getRouteInstructions().get(0));
 
-        pagerAdapter = new ParentPagerAdapter(getChildFragmentManager(),recommendRoutesFragment,instructionFragment);
+        pagerAdapter = new RouteInstructionPagerAdapter(getChildFragmentManager(), recommendRoutesFragment, instructionFragment);
         pagerAdapter.setCount(2);
-        //FIXME: Vi
-        if (typeRequest.equals("route")) {
-            tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_location));
-            tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_compass));
-        } else {
-            tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_bus));
-            tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_station));
-        }
-//         end temp
-//        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_bus));
-//        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_station));
+        //Vi
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_location));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_compass));
+
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
 
@@ -107,8 +99,9 @@ public class ParentViewPagerFragment extends BaseFragment implements RecommendRo
         BottomSheetUtils.setupViewPager(viewPager, getBaseActivity().findViewById(R.id.bottom_sheet));
 
     }
+
     //Cường
-    private void generateListOffline(){
+    private void generateListOffline() {
         List<RecommendRoutesDto> list = new ArrayList<>();
         list.add(new RecommendRoutesDto("Tuyen duong 18-24", 112, 90, 2, "18, 24"));
         list.add(new RecommendRoutesDto("Tuyen duong 55-18", 112, 90, 2, "55, 18"));
@@ -140,8 +133,9 @@ public class ParentViewPagerFragment extends BaseFragment implements RecommendRo
         list.add(new RecommendRoutesDto("Tuyen duong 01-19-20", 112, 90, 3, "01, 19, 20"));
         list.add(new RecommendRoutesDto("Tuyen duong 18-04-25", 112, 90, 3, "18, 04, 25"));
         list.add(new RecommendRoutesDto("Tuyen duong 139-32", 112, 90, 2, "139, 32"));
+//        Vi
         setRecommendRoutes(list);
-        List<Object> listOflistDTO = new ArrayList<>();
+        List<Object> listInstructionDto = new ArrayList<>();
         List<Object> listDto = new ArrayList<>();
         listDto.add(new WalkInstructionDto(1, 1, 2,
                 new CoordDto(10.768116, 106.688573, "FPT University"),
@@ -170,11 +164,11 @@ public class ParentViewPagerFragment extends BaseFragment implements RecommendRo
         listDto1.add(new BusRouteInstructionDto(2, listRoute, "#41ba34", 18, 30, 10000));
         listDto1.add(new WalkInstructionDto(1, 2, 3,
                 new CoordDto(10.769504, 106.695587, "Station 4"),
-                new CoordDto(10.770937, 106.697164, "FPT Univisitu"),
+                new CoordDto(10.770937, 106.697164, "FPT University"),
                 9, 150));
-        listOflistDTO.add(listDto);
-        listOflistDTO.add(listDto1);
-        setRouteInstructions(listOflistDTO);
+        listInstructionDto.add(listDto);
+        listInstructionDto.add(listDto1);
+        setRouteInstructions(listInstructionDto);
     }
 
     @Override

@@ -10,8 +10,8 @@ import com.example.fpt.busstation.ui.base.BaseFragment;
 import com.example.fpt.busstation.ui.base.BaseRcvAdapter;
 import com.example.fpt.busstation.ui.behaviorbottom.adapter.BusAdapter;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.BusDto;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,8 +21,18 @@ import java.util.List;
 public class BusFragment extends BaseFragment implements BaseRcvAdapter.OnItemListener {
     RecyclerView recyclerView;
     BusAdapter busAdapter;
+    List<BusDto> busDtoList;
 
-    public BusFragment() {
+    public List<BusDto> getList() {
+        return busDtoList;
+    }
+
+    public List<BusDto> getBusDtoList() {
+        return busDtoList;
+    }
+
+    public void setBusDtoList(List<BusDto> busDtoList) {
+        this.busDtoList = busDtoList;
     }
 
     @Override
@@ -33,32 +43,9 @@ public class BusFragment extends BaseFragment implements BaseRcvAdapter.OnItemLi
     @Override
     protected void onInit(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_bus);
-        List<BusDto> busDtoList = new ArrayList<BusDto>();
-        busDtoList.add(new BusDto("Tuyen so 01", "Ben Thanh - BX Cho Lon"));
-        busDtoList.add(new BusDto("Tuyen so 02", "Ben Thanh - BX Mien Tay"));
-        busDtoList.add(new BusDto("Tuyen so 03", "Ben Thanh - BX Thanh Loc"));
-        busDtoList.add(new BusDto("Tuyen so 01", "Ben Thanh - BX Cho Lon"));
-        busDtoList.add(new BusDto("Tuyen so 02", "Ben Thanh - BX Mien Tay"));
-        busDtoList.add(new BusDto("Tuyen so 03", "Ben Thanh - BX Thanh Loc"));
-        busDtoList.add(new BusDto("Tuyen so 01", "Ben Thanh - BX Cho Lon"));
-        busDtoList.add(new BusDto("Tuyen so 02", "Ben Thanh - BX Mien Tay"));
-        busDtoList.add(new BusDto("Tuyen so 03", "Ben Thanh - BX Thanh Loc"));
-        busDtoList.add(new BusDto("Tuyen so 01", "Ben Thanh - BX Cho Lon"));
-        busDtoList.add(new BusDto("Tuyen so 02", "Ben Thanh - BX Mien Tay"));
-        busDtoList.add(new BusDto("Tuyen so 03", "Ben Thanh - BX Thanh Loc"));
-        busDtoList.add(new BusDto("Tuyen so 01", "Ben Thanh - BX Cho Lon"));
-        busDtoList.add(new BusDto("Tuyen so 02", "Ben Thanh - BX Mien Tay"));
-        busDtoList.add(new BusDto("Tuyen so 03", "Ben Thanh - BX Thanh Loc"));
-        busDtoList.add(new BusDto("Tuyen so 01", "Ben Thanh - BX Cho Lon"));
-        busDtoList.add(new BusDto("Tuyen so 02", "Ben Thanh - BX Mien Tay"));
-        busDtoList.add(new BusDto("Tuyen so 03", "Ben Thanh - BX Thanh Loc"));
-        busDtoList.add(new BusDto("Tuyen so 01", "Ben Thanh - BX Cho Lon"));
-        busDtoList.add(new BusDto("Tuyen so 02", "Ben Thanh - BX Mien Tay"));
-        busDtoList.add(new BusDto("Tuyen so 03", "Ben Thanh - BX Thanh Loc"));
         busAdapter = new BusAdapter(busDtoList, this.getContext());
         busAdapter.setmListener(this);
-        RecyclerView.LayoutManager layoutManager = new
-                LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(busAdapter);
         recyclerView.setNestedScrollingEnabled(true);
@@ -69,4 +56,11 @@ public class BusFragment extends BaseFragment implements BaseRcvAdapter.OnItemLi
     public void onItemClick(View view, Object data, int position) {
         Log.d("OnItemClick", ((BusDto) data).getBusNumber());
     }
+
+
+    public void changeBusCross(List<BusDto> busList) {
+        busAdapter.changeItems(busList);
+    }
+
+
 }
