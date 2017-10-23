@@ -21,10 +21,26 @@ import java.util.List;
 public class StationFragment extends BaseFragment implements BaseRcvAdapter.OnItemListener {
     RecyclerView recyclerView;
     StationAdapter stationAdapter;
+    List<StationDto> stationDtoList;
+    Callback callback;
 
-    @Override
-    public void onItemClick(View view, Object data, int position) {
-        Log.d("OnItemClick", ((StationDto) data).getStationName());
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    public StationFragment() {
+    }
+
+    public List<StationDto> getStationDtoList() {
+        return stationDtoList;
+    }
+
+    public void setStationDtoList(List<StationDto> stationDtoList) {
+        this.stationDtoList = stationDtoList;
     }
 
     @Override
@@ -35,28 +51,6 @@ public class StationFragment extends BaseFragment implements BaseRcvAdapter.OnIt
     @Override
     protected void onInit(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_station);
-        List<StationDto> stationDtoList = new ArrayList<StationDto>();
-        stationDtoList.add(new StationDto("Tram Ben Thanh", "Ben Thanh, Quan 1"));
-        stationDtoList.add(new StationDto("Tram Hau Giang", "1076 Hau Giang, Quan 6"));
-        stationDtoList.add(new StationDto("Tram Trung Son", "98 Trung Son, Quan 7"));
-        stationDtoList.add(new StationDto("Tram Ben Thanh", "Ben Thanh, Quan 1"));
-        stationDtoList.add(new StationDto("Tram Hau Giang", "1076 Hau Giang, Quan 6"));
-        stationDtoList.add(new StationDto("Tram Trung Son", "98 Trung Son, Quan 7"));
-        stationDtoList.add(new StationDto("Tram Ben Thanh", "Ben Thanh, Quan 1"));
-        stationDtoList.add(new StationDto("Tram Hau Giang", "1076 Hau Giang, Quan 6"));
-        stationDtoList.add(new StationDto("Tram Trung Son", "98 Trung Son, Quan 7"));
-        stationDtoList.add(new StationDto("Tram Ben Thanh", "Ben Thanh, Quan 1"));
-        stationDtoList.add(new StationDto("Tram Hau Giang", "1076 Hau Giang, Quan 6"));
-        stationDtoList.add(new StationDto("Tram Trung Son", "98 Trung Son, Quan 7"));
-        stationDtoList.add(new StationDto("Tram Ben Thanh", "Ben Thanh, Quan 1"));
-        stationDtoList.add(new StationDto("Tram Hau Giang", "1076 Hau Giang, Quan 6"));
-        stationDtoList.add(new StationDto("Tram Trung Son", "98 Trung Son, Quan 7"));
-        stationDtoList.add(new StationDto("Tram Ben Thanh", "Ben Thanh, Quan 1"));
-        stationDtoList.add(new StationDto("Tram Hau Giang", "1076 Hau Giang, Quan 6"));
-        stationDtoList.add(new StationDto("Tram Trung Son", "98 Trung Son, Quan 7"));
-        stationDtoList.add(new StationDto("Tram Ben Thanh", "Ben Thanh, Quan 1"));
-        stationDtoList.add(new StationDto("Tram Hau Giang", "1076 Hau Giang, Quan 6"));
-        stationDtoList.add(new StationDto("Tram Trung Son", "98 Trung Son, Quan 7"));
         stationAdapter = new StationAdapter(stationDtoList, this.getContext());
         stationAdapter.setmListener(this);
         RecyclerView.LayoutManager layoutManager = new
@@ -65,4 +59,17 @@ public class StationFragment extends BaseFragment implements BaseRcvAdapter.OnIt
         recyclerView.setAdapter(stationAdapter);
         recyclerView.setNestedScrollingEnabled(true);
     }
+
+
+    @Override
+    public void onItemClick(View view, Object data, int position) {
+        Log.d("OnItemClick", ((StationDto) data).getStationName());
+        callback.changeListBusCross(position);
+    }
+
+    public interface Callback {
+        /*Change stations list which selected bus cross*/
+        void changeListBusCross(int position);
+    }
+
 }

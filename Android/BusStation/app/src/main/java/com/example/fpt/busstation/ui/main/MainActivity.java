@@ -9,21 +9,19 @@ import android.location.Location;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.service.AnchorSheetBehavior;
 import com.example.fpt.busstation.ui.base.BaseActivity;
-import com.example.fpt.busstation.ui.behaviorbottom.ParentViewPagerFragment;
-import com.example.fpt.busstation.ui.behaviorbottom.TestFragment.TestFirstFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.BusStationViewPagerFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -69,6 +67,10 @@ public class MainActivity extends BaseActivity implements
     private static final int PERMISSION_AUDIO = 2;
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_SPEECH_INPUT = 2;
+    //Vi: Temporary
+    private String typeRequest;
+    private static final String BUS_STATION_REQ = "case12";
+    private static final String ROUTE_INS_REQ = "case3";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,8 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onInit() {
         Log.d("OnInit", "Fire");
+        typeRequest = "case12";
+//        typeRequest = "case3";
         mPresenter = new MainPresenter<>();
         mPresenter.onAttach(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -97,27 +101,20 @@ public class MainActivity extends BaseActivity implements
                 startRecognizeSpeech();
             }
         });
-        mFab= (FloatingActionButton)findViewById(R.id.fab);
-
-//        btTest.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startRecognizeSpeech();
-//            }
-//        });
-
-        /*btTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showMessage("sendrequest");
-                mPresenter.sendRequest(mLastLocation);
-            }
-        });*/
-        getSupportFragmentManager()
-                .beginTransaction()
-                .disallowAddToBackStack()
-                .add(R.id.bottom_sheet, new ParentViewPagerFragment())
-                .commit();
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        if (typeRequest.equals(BUS_STATION_REQ)) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .disallowAddToBackStack()
+                    .add(R.id.bottom_sheet, new BusStationViewPagerFragment())
+                    .commit();
+        } else if (typeRequest.equals(ROUTE_INS_REQ)) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .disallowAddToBackStack()
+                    .add(R.id.bottom_sheet, new RouteInstructionViewPagerFragment())
+                    .commit();
+        }
         mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
         mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
         mBottomSheetBehavior.setHideable(true);
