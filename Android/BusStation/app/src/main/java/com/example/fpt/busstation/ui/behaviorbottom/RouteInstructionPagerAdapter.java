@@ -13,11 +13,12 @@ import com.example.fpt.busstation.ui.behaviorbottom.fragments.StationFragment;
  * Created by cuong on 10/5/2017.
  */
 
-public class ParentPagerAdapter extends FragmentStatePagerAdapter {
+public class RouteInstructionPagerAdapter extends FragmentStatePagerAdapter {
     private int mTabCount;
     private RecommendRoutesFragment recommendRoutesFragment;
     private InstructionFragment instructionFragment;
-    public ParentPagerAdapter(FragmentManager fragmentManager,RecommendRoutesFragment recommendRoutesFragment, InstructionFragment instructionFragment) {
+
+    public RouteInstructionPagerAdapter(FragmentManager fragmentManager, RecommendRoutesFragment recommendRoutesFragment, InstructionFragment instructionFragment) {
         super(fragmentManager);
         this.mTabCount = 0;
         this.recommendRoutesFragment = recommendRoutesFragment;
@@ -28,11 +29,9 @@ public class ParentPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-//                return new BusFragment();
                 return recommendRoutesFragment;
             case 1:
 
-//                return new StationFragment();
                 return instructionFragment;
             default:
                 return null;
