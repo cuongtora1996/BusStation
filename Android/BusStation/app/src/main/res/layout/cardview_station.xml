@@ -9,10 +9,10 @@
         android:id="@+id/cvStation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="4dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
         card_view:cardBackgroundColor="@color/transparent"
         card_view:cardCornerRadius="2dp">
 
@@ -22,16 +22,17 @@
 
             <ImageView
                 android:id="@+id/ivStationIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_station" />
+                android:layout_width="55dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="05dp"
+                android:src="@drawable/ic_station_item_2" />
 
             <GridLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignBottom="@+id/ivStationIcon"
+                android:layout_height="70dp"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="15dp"
                 android:layout_toEndOf="@+id/ivStationIcon"
                 android:columnCount="1"
                 android:paddingTop="5dp">
@@ -43,9 +44,9 @@
                     android:layout_column="0"
                     android:layout_row="0"
                     android:layout_rowWeight="2"
-                    android:textSize="16dp"
                     android:text="Station Name"
-                    android:textColor="#006600" />
+                    android:textColor="#3b5998"
+                    android:textSize="16dp" />
 
 
                 <TextView
@@ -55,6 +56,8 @@
                     android:layout_column="0"
                     android:layout_row="1"
                     android:layout_rowWeight="1"
+                    android:lines="4"
+                    android:maxLines="4"
                     android:text="Station Address"
                     android:textColor="#101010" />
             </GridLayout>

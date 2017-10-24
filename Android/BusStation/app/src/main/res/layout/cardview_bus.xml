@@ -23,17 +23,17 @@
 
             <ImageView
                 android:id="@+id/ivBusIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_bus" />
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_school_bus_item" />
 
             <GridLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                android:layout_alignBottom="@+id/ivBusIcon"
+                android:layout_height="70dp"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="15dp"
                 android:layout_toEndOf="@+id/ivBusIcon"
                 android:columnCount="1"
                 android:paddingTop="5dp">
@@ -46,7 +46,7 @@
                     android:layout_row="0"
                     android:layout_rowWeight="2"
                     android:text="Bus Number"
-                    android:textColor="#006600"
+                    android:textColor="#3b5998"
                     android:textSize="16dp" />
 
                 <TextView
@@ -56,6 +56,8 @@
                     android:layout_column="0"
                     android:layout_row="1"
                     android:layout_rowWeight="1"
+                    android:lines="4"
+                    android:maxLines="4"
                     android:text="Bus Route"
                     android:textColor="#101010" />
             </GridLayout>
