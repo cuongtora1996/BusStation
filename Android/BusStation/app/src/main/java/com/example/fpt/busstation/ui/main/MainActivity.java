@@ -6,6 +6,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -15,16 +17,21 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.service.AnchorSheetBehavior;
 import com.example.fpt.busstation.ui.base.BaseActivity;
 import com.example.fpt.busstation.ui.behaviorbottom.BusStationViewPagerFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.BusRouteInstructionDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.RouteDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.WalkInstructionDto;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -39,11 +46,16 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CustomCap;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +65,8 @@ public class MainActivity extends BaseActivity implements
         MainMvpView, OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener,
+        RouteInstructionViewPagerFragment.Callback{
 
 
     private AnchorSheetBehavior mBottomSheetBehavior;
@@ -96,8 +109,9 @@ public class MainActivity extends BaseActivity implements
         recordImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mPresenter.sendStationRequest("RouteRequest");
-//                mPresenter.sendRouteRequest("RouteRequest");
+
             }
 
         });
@@ -185,6 +199,67 @@ public class MainActivity extends BaseActivity implements
             Log.d("===========>Prepare", "RequestPermissionSafely");
             requestPermissionsSafely(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
         }
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                String[] stringsplit = marker.getTitle().split(",");
+                if(stringsplit.length==1) return null;
+                View myContentView = null;
+
+                int type = Integer.parseInt(stringsplit[0]);
+                final int position = Integer.parseInt(stringsplit[1]);
+                String titleString = stringsplit[2];
+                switch (type) {
+                    case 1:
+                        myContentView = getLayoutInflater().inflate(R.layout.custom_marker_station, null);
+                        TextView title = (TextView) myContentView.findViewById(R.id.title);
+                        title.setText(titleString);
+                        TextView snippet = (TextView) myContentView.findViewById(R.id.snippet);
+                        snippet.setText(marker.getSnippet());
+
+                        break;
+
+                }
+
+
+                return myContentView;
+            }
+        });
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(final Marker marker) {
+
+                String[] stringsplit = marker.getTitle().split(",");
+                int type = Integer.parseInt(stringsplit[0]);
+                int position = Integer.parseInt(stringsplit[1]);
+                switch (type){
+                    case 1:
+                        LatLng markerPosition = marker.getPosition();
+                        Point markerPoint = mLastProjectionMarker.toScreenLocation(markerPosition);
+                        Point targetPoint = new Point(markerPoint.x, (int) (markerPoint.y + (findViewById(R.id.map).getHeight()*0.2)));
+                        LatLng targetPosition = mLastProjectionMarker.fromScreenLocation(targetPoint);
+                        moveMapCamera(targetPosition);
+                        stationFragment.changeListBusCross(position);
+                        showBottomSheet();
+                        break;
+                }
+
+            }
+        });
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                moveMapCameraMarker(marker.getPosition());
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -394,30 +469,34 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onLocationChanged(Location location) {
         Log.d("OnLocationChanged", "Fire");
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
+
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_bus));
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker());
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+        else{
+            moveMapCamera(latLng);
+        }
         mCurrLocationMarker = mMap.addMarker(markerOptions);
         mLastLocation = location;
         //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
     }
 
     @Override
+ 
     public void placeStation(double lng, double lat, String address, String name) {
+ 
 
         LatLng latLng = new LatLng(lat, lng);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title(name);
+        markerOptions.title("1,"+position+","+name);
         markerOptions.snippet(address);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_station));
         mMap.addMarker(markerOptions);
@@ -436,22 +515,109 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void showBusAndStation(List<StationDto> list) {
+        stationFragment = new BusStationViewPagerFragment(list);
         getSupportFragmentManager()
                 .beginTransaction()
                 .disallowAddToBackStack()
-                .replace(R.id.bottom_sheet, new BusStationViewPagerFragment(list))
+                .replace(R.id.bottom_sheet, stationFragment)
                 .commit();
         showBottomSheet();
     }
 
     @Override
     public void showRouteInstruction(List<RecommendRoutesDto> list) {
-
+        routeFragment = new RouteInstructionViewPagerFragment(list);
+        routeFragment.setCallback(this);
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(null)
-                .add(R.id.bottom_sheet, new RouteInstructionViewPagerFragment(list))
+                .add(R.id.bottom_sheet, routeFragment)
                 .commit();
         showBottomSheet();
+    }
+    public void moveMapCamera(final LatLng latLng){
+        findViewById(R.id.map).post(new Runnable() {
+            @Override
+            public void run() {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+            }
+        });
+    }
+    public void moveMapCameraMarker(final LatLng latLng){
+        findViewById(R.id.map).post(new Runnable() {
+            @Override
+            public void run() {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(16), new GoogleMap.CancelableCallback() {
+                    @Override
+                    public void onFinish() {
+                        mLastProjectionMarker = mMap.getProjection();
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    @Override
+    public void drawRoute(List<Object> instruction) {
+        for(Object object : instruction){
+            if(object instanceof BusRouteInstructionDto){
+                BusRouteInstructionDto dto = (BusRouteInstructionDto) object;
+                PolylineOptions polylineOptions = new PolylineOptions();
+                polylineOptions.color(Color.parseColor(dto.getColor()));
+               // polylineOptions.geodesic(true);
+                polylineOptions.width(5);
+                polylineOptions.clickable(true);
+                polylineOptions.jointType(JointType.ROUND);
+                polylineOptions.endCap(new RoundCap());
+                polylineOptions.startCap(new RoundCap());
+                for(RouteDto routeDto : dto.getRouteDto()){
+                    polylineOptions.add(new LatLng(routeDto.getLat(),routeDto.getLng()));
+                }
+                mMap.addPolyline(polylineOptions);
+
+            } else {
+                WalkInstructionDto dto = (WalkInstructionDto) object;
+                if(dto.getType()==3){
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .title(dto.getBeginCoord().getName())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                            .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
+                    mMap.addMarker(markerOptions);
+                }
+                else if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .title(dto.getBeginCoord().getName())
+                            .icon(BitmapDescriptorFactory.defaultMarker())
+                            .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
+                    mMap.addMarker(markerOptions);
+                    moveMapCamera(markerOptions.getPosition());
+                    markerOptions = new MarkerOptions()
+                            .title(dto.getEndCoord().getName())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                            .position(new LatLng(dto.getEndCoord().getLat(),dto.getEndCoord().getLng()));
+                    mMap.addMarker(markerOptions);
+                } else if (dto.getBeginType() == 2 && dto.getEndType() == 3) {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .title(dto.getBeginCoord().getName())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                            .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
+                    mMap.addMarker(markerOptions);
+                    markerOptions = new MarkerOptions()
+                            .title(dto.getEndCoord().getName())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            .position(new LatLng(dto.getEndCoord().getLat(),dto.getEndCoord().getLng()));
+                    mMap.addMarker(markerOptions);
+                }
+            }
+        }
     }
 }
