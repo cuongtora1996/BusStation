@@ -32,4 +32,12 @@
     <color name="blue_grey_light">#A5B4C8</color>
     <color name="orange">#FFA500</color>
     <color name="yellow">#fff44f</color>
+
+    <!--Design colors for tab layout-->
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="titleColor">#3b5998</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="tabBackgroundColor">#3b5998</color>
+    <color name="tabContentColor">#d9edfc</color>
 </resources>
