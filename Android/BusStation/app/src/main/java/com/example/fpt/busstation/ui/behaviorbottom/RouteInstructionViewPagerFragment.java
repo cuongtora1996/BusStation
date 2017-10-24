@@ -31,7 +31,15 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
     RecommendRoutesFragment recommendRoutesFragment;
     InstructionFragment instructionFragment;
     List<RecommendRoutesDto> recommendRoutes;
+    public Callback getCallback() {
+        return callback;
+    }
 
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    Callback callback;
 
     private static final int NUMBER_TAB = 2;
     private static final int[] tabIcons = {R.drawable.ic_route_item, R.drawable.ic_direction_tab_icon};

@@ -84,7 +84,12 @@ public class MainActivity extends BaseActivity implements
     private static final int PERMISSION_AUDIO = 2;
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_SPEECH_INPUT = 2;
+    private static final String BUS_STATION_REQ = "case12";
+    private static final String ROUTE_INS_REQ = "case3";
 
+    private BusStationViewPagerFragment stationFragment;
+    private RouteInstructionViewPagerFragment routeFragment;
+    private Projection mLastProjectionMarker ;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("OnCreate", "Fire");
@@ -110,7 +115,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
 
-                mPresenter.sendStationRequest("RouteRequest");
+                mPresenter.sendRouteRequest("RouteRequest");
 
             }
 
@@ -489,8 +494,8 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
- 
-    public void placeStation(double lng, double lat, String address, String name) {
+
+    public void placeStation(double lng, double lat, String address, String name,int position) {
  
 
         LatLng latLng = new LatLng(lat, lng);
