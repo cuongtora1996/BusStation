@@ -1,6 +1,7 @@
 package com.example.fpt.busstation.ui.main;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -22,6 +23,8 @@ import com.example.fpt.busstation.service.AnchorSheetBehavior;
 import com.example.fpt.busstation.ui.base.BaseActivity;
 import com.example.fpt.busstation.ui.behaviorbottom.BusStationViewPagerFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -43,6 +46,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends BaseActivity implements
@@ -67,8 +71,8 @@ public class MainActivity extends BaseActivity implements
     private static final int PERMISSION_AUDIO = 2;
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_SPEECH_INPUT = 2;
-    //Vi: Temporary
-    private String typeRequest;
+
+
     private static final String BUS_STATION_REQ = "case12";
     private static final String ROUTE_INS_REQ = "case3";
 
@@ -87,7 +91,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onInit() {
         Log.d("OnInit", "Fire");
-        typeRequest = "case12";
+
 //        typeRequest = "case3";
         mPresenter = new MainPresenter<>();
         mPresenter.onAttach(this);
@@ -98,23 +102,10 @@ public class MainActivity extends BaseActivity implements
         recordImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startRecognizeSpeech();
+                mPresenter.sendStationRequest("RouteRequest");
             }
         });
         mFab = (FloatingActionButton) findViewById(R.id.fab);
-        if (typeRequest.equals(BUS_STATION_REQ)) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .disallowAddToBackStack()
-                    .add(R.id.bottom_sheet, new BusStationViewPagerFragment())
-                    .commit();
-        } else if (typeRequest.equals(ROUTE_INS_REQ)) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .disallowAddToBackStack()
-                    .add(R.id.bottom_sheet, new RouteInstructionViewPagerFragment())
-                    .commit();
-        }
         mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
         mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
         mBottomSheetBehavior.setHideable(true);
@@ -425,19 +416,46 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void placeStation(double lng, double lat, String address) {
+    public void placeStation(double lng, double lat, String address,String name) {
 
         LatLng latLng = new LatLng(lat, lng);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title(address);
+        markerOptions.title(name);
+        markerOptions.snippet(address);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_station));
         mMap.addMarker(markerOptions);
     }
 
     @Override
     public void showBottomSheet() {
-        mBottomSheetBehavior.setState(mBottomSheetBehavior.STATE_ANCHOR);
-        mBottomSheetBehavior.setPeekHeight(120);
+        findViewById(R.id.bottom_sheet).post(new Runnable() {
+            @Override
+            public void run() {
+                mBottomSheetBehavior.setPeekHeight(120);
+                mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_ANCHOR);
+            }
+        });
+    }
+
+    @Override
+    public void showBusAndStation(List<StationDto> list) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .disallowAddToBackStack()
+                .replace(R.id.bottom_sheet, new BusStationViewPagerFragment(list))
+                .commit();
+        showBottomSheet();
+    }
+
+    @Override
+    public void showRouteInstruction(List<RecommendRoutesDto> list) {
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(null)
+                .add(R.id.bottom_sheet, new RouteInstructionViewPagerFragment(list))
+                .commit();
+        showBottomSheet();
     }
 }

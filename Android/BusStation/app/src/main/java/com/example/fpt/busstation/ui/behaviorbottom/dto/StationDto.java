@@ -1,5 +1,7 @@
 package com.example.fpt.busstation.ui.behaviorbottom.dto;
 
+import java.util.List;
+
 /**
  * Created by Vi Nguyen on 17/10/2017.
  */
@@ -7,13 +9,57 @@ package com.example.fpt.busstation.ui.behaviorbottom.dto;
 public class StationDto {
     private String stationName;
     private String stationAddress;
-
+    private Double lat;
+    private Double lng;
+    private List<BusDto> listBus;
+    private Double duration;
+    private Double distance;
     public StationDto(String stationName, String stationAddress) {
         this.stationName = stationName;
         this.stationAddress = stationAddress;
     }
 
+    public Double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Double duration) {
+        this.duration = duration;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
     public StationDto() {
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
+    }
+
+    public List<BusDto> getListBus() {
+        return listBus;
+    }
+
+    public void setListBus(List<BusDto> list) {
+        this.listBus = list;
     }
 
     public String getStationName() {

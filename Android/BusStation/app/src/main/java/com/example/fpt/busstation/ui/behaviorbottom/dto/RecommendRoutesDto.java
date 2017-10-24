@@ -12,9 +12,9 @@ public class RecommendRoutesDto {
     private double duration;
     private int totalBus;
     private String listBusNo;
-    private List instruction;
+    private List<Object> instruction;
 
-    public RecommendRoutesDto(String recommendRouteId, double distance, double duration, int totalBus, String listBusNo, List instruction) {
+    public RecommendRoutesDto(String recommendRouteId, double distance, double duration, int totalBus, String listBusNo, List<Object> instruction) {
         this.recommendRouteId = recommendRouteId;
         this.distance = distance;
         this.duration = duration;
@@ -34,7 +34,7 @@ public class RecommendRoutesDto {
     public RecommendRoutesDto() {
     }
 
-    public String generateRouteName(String listBusNo) {
+    public String generateRouteName() {
         StringBuilder sb = new StringBuilder();
         String[] busNumArr = listBusNo.split(", ");
         if (!listBusNo.equals("")) {
@@ -88,11 +88,11 @@ public class RecommendRoutesDto {
         this.listBusNo = listBusNo;
     }
 
-    public List getInstruction() {
+    public List<Object> getInstruction() {
         return instruction;
     }
 
-    public void setInstruction(List instruction) {
+    public void setInstruction(List<Object> instruction) {
         this.instruction = instruction;
     }
 
