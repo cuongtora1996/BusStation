@@ -2,17 +2,18 @@ package com.example.fpt.busstation.ui.behaviorbottom;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.ui.base.BaseFragment;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.BusDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.BusFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.StationFragment;
 import com.example.fpt.busstation.util.BottomSheetUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,12 +22,12 @@ import java.util.List;
 
 public class BusStationViewPagerFragment extends BaseFragment implements StationFragment.Callback {
     ViewPager viewPager;
-    BusStationPagerAdapter pagerAdapter;
     TabLayout tabLayout;
     BusFragment busFragment;
     StationFragment stationFragment;
-
     List<StationDto> stationDtoList;
+    private static final int NUMBER_TAB = 2;
+    private static final int[] tabIcons = {R.drawable.ic_station_for_tab_icon, R.drawable.ic_bus_for_tab_icon};
 
     public BusStationViewPagerFragment() {
     }
@@ -39,10 +40,6 @@ public class BusStationViewPagerFragment extends BaseFragment implements Station
         return stationDtoList;
     }
 
-    public void setStationDtoList(List<StationDto> stationDtoList) {
-        this.stationDtoList = stationDtoList;
-    }
-
     @Override
     protected int getContentViewResource() {
         return R.layout.parent_viewpager_bus_station;
@@ -50,27 +47,43 @@ public class BusStationViewPagerFragment extends BaseFragment implements Station
 
     @Override
     protected void onInit(View view) {
-
-        viewPager = (ViewPager) view.findViewById(R.id.vpBusStation);
-        tabLayout = (TabLayout) view.findViewById(R.id.tlBusStation);
-
         stationFragment = new StationFragment();
         stationFragment.setStationDtoList(getStationDtoList());
         stationFragment.setCallback(this);
 
-
         busFragment = new BusFragment();
         busFragment.setBusDtoList(getStationDtoList().get(0).getListBus());
 
-        pagerAdapter = new BusStationPagerAdapter(getChildFragmentManager(), stationFragment, busFragment);
-        pagerAdapter.setTabCount(2);
+        viewPager = (ViewPager) view.findViewById(R.id.vpBusStation);
+        setupViewPager(viewPager);
 
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_station));
-        tabLayout.addTab(tabLayout.newTab().setIcon(R.mipmap.ic_bus));
+        tabLayout = (TabLayout) view.findViewById(R.id.tlBusStation);
+        tabLayout.setupWithViewPager(viewPager);
+        setupTabAttribute(viewPager, tabLayout);
 
-        viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        BottomSheetUtils.setupViewPager(viewPager, getBaseActivity().findViewById(R.id.bottom_sheet));
+    }
+
+
+    private void setupViewPager(ViewPager viewPager) {
+        BusStationPagerAdapter adapter = new BusStationPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(stationFragment, "Trạm gần đây");
+        adapter.addFragment(busFragment, "Xe ghé trạm");
+        adapter.setTabCount(NUMBER_TAB);
+        viewPager.setAdapter(adapter);
+    }
+
+    private void setupTabAttribute(final ViewPager viewPager, TabLayout tabLayout) {
+        for (int i = 0; i < NUMBER_TAB; i++) {
+            TextView tab = (TextView) LayoutInflater.from(this.getContext()).inflate(R.layout.custom_tab, null);
+
+            tab.setText(viewPager.getAdapter().getPageTitle(i));
+            tab.setCompoundDrawablesWithIntrinsicBounds(0, tabIcons[i], 0, 0);
+            tabLayout.getTabAt(i).setCustomView(tab);
+        }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -87,10 +100,7 @@ public class BusStationViewPagerFragment extends BaseFragment implements Station
 
             }
         });
-        BottomSheetUtils.setupViewPager(viewPager, getBaseActivity().findViewById(R.id.bottom_sheet));
     }
-
-
 
     @Override
     public void changeListBusCross(int position) {
