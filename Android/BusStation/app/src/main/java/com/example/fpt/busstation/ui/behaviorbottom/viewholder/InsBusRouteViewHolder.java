@@ -33,10 +33,10 @@ public class InsBusRouteViewHolder extends BaseRcvViewHolder {
     @Override
     public void bindItem(final BaseRcvAdapter.OnItemListener listener, final Object item, final int position) {
         BusRouteInstructionDto dto = (BusRouteInstructionDto) item;
-        tvTitle.setText("Di tuyen xe so " + dto.getBusNum());
+        tvTitle.setText("Đi tuyến xe số " + dto.getBusNum());
         List<RouteDto> routeDtos = dto.getRouteDto();
         if (routeDtos.get(0).getType() == 1) {
-            tvFromStation.setText(routeDtos.get(0).getName() + "=>");
+            tvFromStation.setText(routeDtos.get(0).getName() + " - ");
         }
         if (routeDtos.get(routeDtos.size() - 1).getType() == 1) {
             tvToStation.setText(routeDtos.get(routeDtos.size() - 1).getName());

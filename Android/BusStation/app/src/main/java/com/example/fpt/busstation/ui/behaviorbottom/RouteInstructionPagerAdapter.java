@@ -9,14 +9,20 @@ import com.example.fpt.busstation.ui.behaviorbottom.fragments.InstructionFragmen
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.RecommendRoutesFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.StationFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by cuong on 10/5/2017.
+ * Created by Vi Nguyen on 24/10/2017.
  */
 
 public class RouteInstructionPagerAdapter extends FragmentStatePagerAdapter {
     private int mTabCount;
     private RecommendRoutesFragment recommendRoutesFragment;
     private InstructionFragment instructionFragment;
+    private final List<Fragment> fragmentList = new ArrayList<>();
+    private final List<String> fragmentTitleList = new ArrayList<>();
+
 
     public RouteInstructionPagerAdapter(FragmentManager fragmentManager, RecommendRoutesFragment recommendRoutesFragment, InstructionFragment instructionFragment) {
         super(fragmentManager);
@@ -25,17 +31,13 @@ public class RouteInstructionPagerAdapter extends FragmentStatePagerAdapter {
         this.instructionFragment = instructionFragment;
     }
 
+    public RouteInstructionPagerAdapter(FragmentManager fm) {
+        super(fm);
+    }
+
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return recommendRoutesFragment;
-            case 1:
-
-                return instructionFragment;
-            default:
-                return null;
-        }
+        return fragmentList.get(position);
     }
 
     @Override
@@ -46,6 +48,17 @@ public class RouteInstructionPagerAdapter extends FragmentStatePagerAdapter {
 
     public void setCount(int mTabCount) {
         this.mTabCount = mTabCount;
+    }
+
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return fragmentTitleList.get(position);
+    }
+
+    public void addFragment(Fragment fragment, String tabTitle) {
+        fragmentList.add(fragment);
+        fragmentTitleList.add(tabTitle);
     }
 
 }

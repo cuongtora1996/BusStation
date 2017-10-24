@@ -7,6 +7,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.BusFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.StationFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Vi Nguyen on 23/10/2017.
  */
@@ -16,6 +19,8 @@ public class BusStationPagerAdapter extends FragmentStatePagerAdapter {
     private int tabCount;
     private StationFragment stationFragment;
     private BusFragment busFragment;
+    private final List<Fragment> fragmentList = new ArrayList<>();
+    private final List<String> fragmentTitleList = new ArrayList<>();
 
 
     public BusStationPagerAdapter(FragmentManager fm, StationFragment stationFragment, BusFragment busFragment) {
@@ -25,16 +30,13 @@ public class BusStationPagerAdapter extends FragmentStatePagerAdapter {
         this.busFragment = busFragment;
     }
 
+    public BusStationPagerAdapter(FragmentManager fm) {
+        super(fm);
+    }
+
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return stationFragment;
-            case 1:
-                return busFragment;
-            default:
-                return null;
-        }
+        return fragmentList.get(position);
     }
 
     @Override
@@ -44,5 +46,15 @@ public class BusStationPagerAdapter extends FragmentStatePagerAdapter {
 
     public void setTabCount(int tabCount) {
         this.tabCount = tabCount;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return fragmentTitleList.get(position);
+    }
+
+    public void addFragment(Fragment fragment, String tabTitle) {
+        fragmentList.add(fragment);
+        fragmentTitleList.add(tabTitle);
     }
 }
