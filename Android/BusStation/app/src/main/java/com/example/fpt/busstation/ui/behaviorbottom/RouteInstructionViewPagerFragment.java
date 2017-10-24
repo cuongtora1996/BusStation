@@ -30,6 +30,15 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
     InstructionFragment instructionFragment;
     List<RecommendRoutesDto> recommendRoutes;
 
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    Callback callback;
 
     public List<RecommendRoutesDto> getRecommendRoutes() {
         return recommendRoutes;
@@ -98,7 +107,11 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
     }
     @Override
     public void changeInstruction(int position) {
+        callback.drawRoute(getRecommendRoutes().get(position).getInstruction());
         instructionFragment.changeInstruction(getRecommendRoutes().get(position).getInstruction());
         viewPager.setCurrentItem(1);
+    }
+    public interface Callback{
+        void drawRoute(List<Object> instruction);
     }
 }

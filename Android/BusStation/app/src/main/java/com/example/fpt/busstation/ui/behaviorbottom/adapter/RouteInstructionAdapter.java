@@ -11,6 +11,7 @@ import com.example.fpt.busstation.ui.base.BaseRcvAdapter;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.BusRouteInstructionDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.WalkInstructionDto;
 import com.example.fpt.busstation.ui.behaviorbottom.viewholder.InsBusRouteViewHolder;
+import com.example.fpt.busstation.ui.behaviorbottom.viewholder.InsWalkBetweenViewHolder;
 import com.example.fpt.busstation.ui.behaviorbottom.viewholder.InsWalkEndViewHolder;
 import com.example.fpt.busstation.ui.behaviorbottom.viewholder.InsWalkBeginViewHolder;
 
@@ -27,6 +28,7 @@ public class RouteInstructionAdapter extends BaseRcvAdapter {
     private static final int TYPE_WALK_BEGIN = 0;
     private static final int TYPE_WALK_END = 1;
     private static final int TYPE_BUS = 2;
+    private static final int TYPE_WALK_BETWEEN = 3;
 
     public RouteInstructionAdapter(List<Object> lstDto, Context context) {
         this.lstDto = lstDto;
@@ -52,6 +54,10 @@ public class RouteInstructionAdapter extends BaseRcvAdapter {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_ins_bus_route, parent, false);
                 viewHolder = new InsBusRouteViewHolder(view);
                 break;
+            case 3:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_ins_walk_between,parent,false);
+                viewHolder = new InsWalkBetweenViewHolder(view);
+                break;
             default:
                 break;
         }
@@ -76,6 +82,9 @@ public class RouteInstructionAdapter extends BaseRcvAdapter {
                 InsBusRouteViewHolder insBusRouteViewHolder = (InsBusRouteViewHolder) holder;
                 insBusRouteViewHolder.bindItem(mListener, lstDto.get(position), position);
                 break;
+            case 3:
+                InsWalkBetweenViewHolder insWalkBetweenViewHolder = (InsWalkBetweenViewHolder) holder;
+                insWalkBetweenViewHolder.bindItem(mListener,lstDto.get(position),position);
         }
     }
 
@@ -94,7 +103,10 @@ public class RouteInstructionAdapter extends BaseRcvAdapter {
             return TYPE_BUS;
         } else if (lstDto.get(position) instanceof WalkInstructionDto) {
             WalkInstructionDto dto = (WalkInstructionDto) lstDto.get(position);
-            if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
+            if(dto.getType()==3){
+                return TYPE_WALK_BETWEEN;
+            }
+            else if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
                 return TYPE_WALK_BEGIN;
             } else if (dto.getBeginType() == 2 && dto.getEndType() == 3) {
                 return TYPE_WALK_END;

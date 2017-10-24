@@ -61,7 +61,7 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
                         double lat = jsonObject.getDouble("Lat");
                         Log.d("LngLat",lng+","+lat);
                         String address = jsonObject.getString("address");
-                        getMvpView().placeStation(lng,lat,address,"");
+                        getMvpView().placeStation(lng,lat,address,"",1);
                     }
 
                 }
@@ -102,8 +102,9 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
             @Override
             public void onResponse(String data) {
                 List<StationDto> result = StationResponse.convertData(data);
-                for(StationDto dto : result){
-                    getMvpView().placeStation(dto.getLng(),dto.getLat(),dto.getStationAddress(),dto.getStationName());
+                for(int i = 0 ;i<result.size();i++){
+                    StationDto dto = result.get(i);
+                    getMvpView().placeStation(dto.getLng(),dto.getLat(),dto.getStationAddress(),dto.getStationName(),i);
                 }
                 getMvpView().showBusAndStation(result);
             }
