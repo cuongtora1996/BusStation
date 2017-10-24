@@ -46,7 +46,7 @@
                     android:layout_row="0"
                     android:layout_rowWeight="2"
                     android:text="Bus Number"
-                    android:textColor="#3b5998"
+                    android:textColor="@color/titleColor"
                     android:textSize="16dp" />
 
                 <TextView

@@ -17,7 +17,7 @@ import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
 public class RecommendRoutesViewHolder1Bus extends BaseRcvViewHolder {
     CardView cardView;
     TextView tvDuration;
-    TextView tvRouteId;
+    TextView tvRouteName;
     TextView tvNoOfBus1;
 
 
@@ -25,7 +25,7 @@ public class RecommendRoutesViewHolder1Bus extends BaseRcvViewHolder {
         super(itemView);
         cardView = (CardView) itemView.findViewById(R.id.cvRoute2Bus);
         tvDuration = (TextView) itemView.findViewById(R.id.tvDuration);
-        tvRouteId = (TextView) itemView.findViewById(R.id.tvRouteId);
+        tvRouteName = (TextView) itemView.findViewById(R.id.tvRouteName);
         tvNoOfBus1 = (TextView) itemView.findViewById(R.id.tvNoOfBus1);
 
     }
@@ -33,8 +33,17 @@ public class RecommendRoutesViewHolder1Bus extends BaseRcvViewHolder {
     @Override
     public void bindItem(final BaseRcvAdapter.OnItemListener listener, final Object item, final int position) {
         RecommendRoutesDto dto = (RecommendRoutesDto) item;
-        tvRouteId.setText(((RecommendRoutesDto) item).getRecommendRouteId());
-        tvDuration.setText(String.valueOf(((RecommendRoutesDto) item).getDuration()) + "\n phut");
+        tvRouteName.setText(((RecommendRoutesDto) item).generateRouteName());
+
+        String timeUnit = "phút";
+        Double duration = dto.getDuration();
+
+        if (duration >= 100) {
+            duration = duration / 100;
+            timeUnit = "giờ";
+        }
+
+        tvDuration.setText(String.valueOf((double) Math.round(duration)) + "\n" + timeUnit);
         String[] busNumber = ((RecommendRoutesDto) item).getListBusNo().split(", ");
         if (busNumber.length == 1) {
             tvNoOfBus1.setText(busNumber[0]);

@@ -49,7 +49,6 @@ public class BusFragment extends BaseFragment implements BaseRcvAdapter.OnItemLi
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(busAdapter);
         recyclerView.setNestedScrollingEnabled(true);
-
     }
 
     @Override

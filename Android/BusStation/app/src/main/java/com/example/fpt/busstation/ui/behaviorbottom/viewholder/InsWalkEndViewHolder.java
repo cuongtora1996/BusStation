@@ -30,9 +30,9 @@ public class InsWalkEndViewHolder extends BaseRcvViewHolder {
     public void bindItem(final BaseRcvAdapter.OnItemListener listener, final Object item, final int position) {
         WalkInstructionDto walkIns = (WalkInstructionDto) item;
         if (walkIns.getEndType() == 3) {//toi diem can den
-            tvFromStation.setText("Xuong xe tai tram: " + walkIns.getBeginCoord().getName());
+            tvFromStation.setText("Xuống xe tại trạm " + walkIns.getBeginCoord().getName());
         }
-        tvWalkTo.setText("Di bo den: " + walkIns.getEndCoord().getName());
+        tvWalkTo.setText("Đi bộ đến " + walkIns.getEndCoord().getName());
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

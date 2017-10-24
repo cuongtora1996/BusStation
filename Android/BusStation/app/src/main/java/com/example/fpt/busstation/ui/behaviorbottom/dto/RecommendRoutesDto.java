@@ -35,17 +35,18 @@ public class RecommendRoutesDto {
     }
 
     public String generateRouteName() {
+        String generatedName = "";
         StringBuilder sb = new StringBuilder();
         String[] busNumArr = listBusNo.split(", ");
         if (!listBusNo.equals("")) {
-            sb.append("Tuyen duong: ");
+            sb.append("Tuyến đường ");
             for (String number : busNumArr) {
                 sb.append(number);
                 sb.append("-");
             }
-            sb.substring(0, sb.length() - 1);
+           generatedName = sb.substring(0, sb.length() - 1);
         }
-        return String.valueOf(sb);
+        return generatedName;
     }
 
     public String getRecommendRouteId() {

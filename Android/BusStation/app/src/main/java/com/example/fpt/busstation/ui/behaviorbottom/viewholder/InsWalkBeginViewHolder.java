@@ -32,12 +32,12 @@ public class InsWalkBeginViewHolder extends BaseRcvViewHolder {
     @Override
     public void bindItem(final BaseRcvAdapter.OnItemListener listener, final Object item, final int position) {
         WalkInstructionDto walkIns = (WalkInstructionDto) item;
-        if (walkIns.getEndType() == 2) { // toi 1 tram
-            tvTitle.setText("Don tuyen so " + walkIns.getToBus());
-            tvBusNum.setText("Don tuyen so " + walkIns.getToBus());
+        if (walkIns.getEndType() == 2) {
+            tvTitle.setText("Đón tuyến số " + walkIns.getToBus());
+            tvBusNum.setText("Đón tuyến số " + walkIns.getToBus());
         }
-        tvStart.setText("Xuat phat tu: " + walkIns.getBeginCoord().getName());
-        tvFromStation.setText(" tai tram " + walkIns.getEndCoord().getName());
+        tvStart.setText("Xuất phát từ trạm " + walkIns.getBeginCoord().getName());
+        tvFromStation.setText(" tại trạm " + walkIns.getEndCoord().getName());
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

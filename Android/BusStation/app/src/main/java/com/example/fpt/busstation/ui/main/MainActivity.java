@@ -72,10 +72,6 @@ public class MainActivity extends BaseActivity implements
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_SPEECH_INPUT = 2;
 
-
-    private static final String BUS_STATION_REQ = "case12";
-    private static final String ROUTE_INS_REQ = "case3";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("OnCreate", "Fire");
@@ -91,8 +87,6 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onInit() {
         Log.d("OnInit", "Fire");
-
-//        typeRequest = "case3";
         mPresenter = new MainPresenter<>();
         mPresenter.onAttach(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -103,7 +97,9 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 mPresenter.sendStationRequest("RouteRequest");
+//                mPresenter.sendRouteRequest("RouteRequest");
             }
+
         });
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
@@ -416,7 +412,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void placeStation(double lng, double lat, String address,String name) {
+    public void placeStation(double lng, double lat, String address, String name) {
 
         LatLng latLng = new LatLng(lat, lng);
         MarkerOptions markerOptions = new MarkerOptions();
