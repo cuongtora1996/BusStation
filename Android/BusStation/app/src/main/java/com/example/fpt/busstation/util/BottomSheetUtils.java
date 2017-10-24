@@ -16,7 +16,7 @@ import com.example.fpt.busstation.service.AnchorSheetBehavior;
 
 public final class BottomSheetUtils {
     public static void setupViewPager(ViewPager viewPager,View BottomSheet) {
-        Log.d("find","sucessssssssss");
+
         viewPager.addOnPageChangeListener(new BottomSheetViewPagerListener(viewPager, BottomSheet));
     }
 

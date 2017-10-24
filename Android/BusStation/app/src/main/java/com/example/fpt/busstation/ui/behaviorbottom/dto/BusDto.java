@@ -7,13 +7,21 @@ package com.example.fpt.busstation.ui.behaviorbottom.dto;
 public class BusDto {
     private String busNumber;
     private String busRoute;
-
+    private String direction;
     public BusDto(String busNumber, String busRoute) {
         this.busNumber = busNumber;
         this.busRoute = busRoute;
     }
 
     public BusDto() {
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public String getBusNumber() {
