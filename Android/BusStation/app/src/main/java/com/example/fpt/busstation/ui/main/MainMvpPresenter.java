@@ -12,5 +12,7 @@ public interface MainMvpPresenter<T extends MainMvpView> extends BaseMvpPresente
     void startRecordAudio();
     void stopRecordAudio();
     void sendTTSRequest(String text);
+    void sendRouteRequest(String text);
+    void sendStationRequest(String text);
     void sendRequest(Location location);
 }

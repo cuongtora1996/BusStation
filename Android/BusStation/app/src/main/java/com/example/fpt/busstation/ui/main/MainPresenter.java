@@ -13,14 +13,23 @@ import android.util.Log;
 import com.android.volley.VolleyError;
 import com.example.fpt.busstation.data.conn.RestClient;
 import com.example.fpt.busstation.data.conn.request.IntentRequest;
+import com.example.fpt.busstation.data.conn.request.RouteRequest;
+import com.example.fpt.busstation.data.conn.request.StationRequest;
+import com.example.fpt.busstation.data.conn.response.RouteResponse;
+import com.example.fpt.busstation.data.conn.response.StationResponse;
 import com.example.fpt.busstation.service.OnResponseStringListener;
 import com.example.fpt.busstation.ui.base.BasePresenter;
+import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.BusDto;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -52,7 +61,7 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
                         double lat = jsonObject.getDouble("Lat");
                         Log.d("LngLat",lng+","+lat);
                         String address = jsonObject.getString("address");
-                        getMvpView().placeStation(lng,lat,address);
+                        getMvpView().placeStation(lng,lat,address,"");
                     }
 
                 }
@@ -67,6 +76,45 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
             }
         });
     }
+
+    @Override
+    public void sendRouteRequest(String text) {
+        Log.d("String text",text);
+        RouteRequest.sendGetRequest(new OnResponseStringListener() {
+            @Override
+            public void onResponse(String data) {
+                List<RecommendRoutesDto> result = RouteResponse.convertData(data);
+
+                getMvpView().showRouteInstruction(result);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                Log.d("error",error.toString());
+            }
+        });
+    }
+
+    @Override
+    public void sendStationRequest(String text) {
+        Log.d("String text",text);
+        StationRequest.sendGetRequest(new OnResponseStringListener() {
+            @Override
+            public void onResponse(String data) {
+                List<StationDto> result = StationResponse.convertData(data);
+                for(StationDto dto : result){
+                    getMvpView().placeStation(dto.getLng(),dto.getLat(),dto.getStationAddress(),dto.getStationName());
+                }
+                getMvpView().showBusAndStation(result);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                Log.d("error",error.toString());
+            }
+        });
+    }
+
     @Override
     public void sendTTSRequest(String text){
             Log.d("String text",text);

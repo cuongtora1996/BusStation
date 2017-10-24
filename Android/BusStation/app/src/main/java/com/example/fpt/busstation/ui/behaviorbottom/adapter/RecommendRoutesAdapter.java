@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.ui.base.BaseRcvAdapter;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
+import com.example.fpt.busstation.ui.behaviorbottom.viewholder.RecommendRoutesViewHolder1Bus;
 import com.example.fpt.busstation.ui.behaviorbottom.viewholder.RecommendRoutesViewHolder2Bus;
 import com.example.fpt.busstation.ui.behaviorbottom.viewholder.RecommendRoutesViewHolder3Bus;
 
@@ -37,6 +38,8 @@ public class RecommendRoutesAdapter extends BaseRcvAdapter {
             case 0:
                 break;
             case 1: //1 bus
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_route_style2_1bus, parent, false);
+                viewHolder = new RecommendRoutesViewHolder1Bus(view);
                 break;
             case 2: //2 bus
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_route_style2_2bus, parent, false);
@@ -62,6 +65,9 @@ public class RecommendRoutesAdapter extends BaseRcvAdapter {
             case 0:
                 break;
             case 1:
+                Log.d("Bind View Holder", "Position of item: " + position);
+                RecommendRoutesViewHolder1Bus viewHolder1Bus = (RecommendRoutesViewHolder1Bus) holder;
+                viewHolder1Bus.bindItem(mListener, listRecommend.get(position), position);
                 break;
             case 2:
                 Log.d("Bind View Holder", "Position of item: " + position);
@@ -79,7 +85,11 @@ public class RecommendRoutesAdapter extends BaseRcvAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (listRecommend.get(position).getTotalBus() == 2) {
+        if(listRecommend.get(position).getTotalBus()==1){
+            Log.d("getItemViewType", "Position of item: " + position);
+            return 1;
+        }
+        else if (listRecommend.get(position).getTotalBus() == 2) {
             Log.d("getItemViewType", "Position of item: " + position);
             return 2;
         } else if (listRecommend.get(position).getTotalBus() == 3) {
