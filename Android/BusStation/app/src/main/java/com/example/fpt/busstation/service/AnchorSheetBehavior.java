@@ -120,7 +120,7 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
 
     private static final float HIDE_FRICTION = 0.1f;
 
-    private static final float ANCHOR_THRESHOLD = 0.25f;
+    private static final float ANCHOR_THRESHOLD = 0.35f;
 
     private float mAnchorThreshold = ANCHOR_THRESHOLD;
 

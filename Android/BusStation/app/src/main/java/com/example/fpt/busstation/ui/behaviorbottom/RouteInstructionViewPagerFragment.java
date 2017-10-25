@@ -31,9 +31,19 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
     RecommendRoutesFragment recommendRoutesFragment;
     InstructionFragment instructionFragment;
     List<RecommendRoutesDto> recommendRoutes;
+    public Callback getCallback() {
+        return callback;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    Callback callback;
 
     private static final int NUMBER_TAB = 2;
     private static final int[] tabIcons = {R.drawable.ic_route_item, R.drawable.ic_direction_tab_icon};
+
 
     public List<RecommendRoutesDto> getRecommendRoutes() {
         return recommendRoutes;
@@ -115,7 +125,11 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
 
     @Override
     public void changeInstruction(int position) {
+        callback.drawRoute(getRecommendRoutes().get(position).getInstruction());
         instructionFragment.changeInstruction(getRecommendRoutes().get(position).getInstruction());
         viewPager.setCurrentItem(1);
+    }
+    public interface Callback{
+        void drawRoute(List<Object> instruction);
     }
 }

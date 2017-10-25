@@ -79,6 +79,19 @@ public class RouteResponse {
                                         walk.setEndCoord(eCoord);
                                         listInstruction.add(walk);
                                         break;
+                                    case 3:
+                                        WalkInstructionDto change = new WalkInstructionDto();
+                                        change.setType(typeIntruction);
+                                        change.setDuration(jsonInstruction.getDouble(ApiContansts.KEY_DURATION));
+                                        change.setDistance(jsonInstruction.getDouble(ApiContansts.KEY_DISTANCE));
+                                        CoordDto cCoord = new CoordDto();
+                                        JSONObject changeCoord = jsonInstruction.getJSONObject(ApiContansts.KEY_BEGINCOORD);
+                                        cCoord.setLat(changeCoord.getDouble(ApiContansts.KEY_LAT));
+                                        cCoord.setLng(changeCoord.getDouble(ApiContansts.KEY_LNG));
+                                        cCoord.setName(changeCoord.getString(ApiContansts.KEY_NAME));
+                                        change.setBeginCoord(cCoord);
+                                        listInstruction.add(change);
+                                        break;
                                     case 2:
                                         List<RouteDto> listRoute = new ArrayList<>();
                                         JSONArray arrayRoute = jsonInstruction.getJSONArray(ApiContansts.KEY_ROUTES);
