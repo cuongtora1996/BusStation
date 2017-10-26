@@ -2,6 +2,7 @@ package com.example.fpt.busstation.data.conn.request;
 
 import com.example.fpt.busstation.data.conn.RestClient;
 import com.example.fpt.busstation.service.OnResponseStringListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +14,15 @@ import java.util.Map;
 public class StationRequest {
     public static final String TAG = RouteRequest.class.getSimpleName();
 
-    public static void sendGetRequest(OnResponseStringListener listener) {
+
+    public static void sendGetRequest(Double lng, Double lat, String numbus,int type,OnResponseStringListener listener) {
         Map<String,String> param= new HashMap<>();
+        //param.put("type",type+"");
+        //param.put("long",lng+"");
+        //param.put("lat",lat+"");
+        //if(type==3 or type==4)
+        //param.put("bus",numbus);
         RestClient.getInstance().getRequest("https://api.myjson.com/bins/1d6bjb",param,listener);
     }
+
 }

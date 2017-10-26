@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity implements
 
     private AnchorSheetBehavior mBottomSheetBehavior;
     private MainMvpPresenter<MainMvpView> mPresenter;
-    private ImageView recordImgView;
+    private FloatingActionButton recordImgView;
     private EditText etTest;
     private long mLastClickTime = 0;
     private GoogleMap mMap;
@@ -110,20 +110,22 @@ public class MainActivity extends BaseActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        recordImgView = (ImageView) findViewById(R.id.recordImgView);
+        recordImgView = (FloatingActionButton) findViewById(R.id.recordImgView);
         recordImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                mPresenter.sendRouteRequest("RouteRequest");
+                if(mLastLocation !=null)
+                mPresenter.sendRouteRequest(mLastLocation.getLongitude(),mLastLocation.getLatitude(),"","",5);
 
             }
 
         });
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
-        mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
+
         mBottomSheetBehavior.setHideable(true);
+        mBottomSheetBehavior.setPeekHeight(150);
+        mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_HIDDEN);
         mBottomSheetBehavior.setAnchorSheetCallback(new AnchorSheetBehavior.AnchorSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -131,9 +133,11 @@ public class MainActivity extends BaseActivity implements
                     case AnchorSheetBehavior.STATE_COLLAPSED:
                         break;
                     case AnchorSheetBehavior.STATE_DRAGGING:
+
                         break;
                     case AnchorSheetBehavior.STATE_EXPANDED:
                         Log.d("BottomSheetBehavior", "State Expanded");
+
                         break;
                     case AnchorSheetBehavior.STATE_HIDDEN:
                         Log.d("BottomSheetBehavior", "State Hidden");
@@ -154,7 +158,9 @@ public class MainActivity extends BaseActivity implements
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showBottomSheet();
+                if(mBottomSheetBehavior.getState()==AnchorSheetBehavior.STATE_ANCHOR)
+                    hideBottomSheet();
+                else showBottomSheet();
             }
         });
         /*btTest.setOnTouchListener(new View.OnTouchListener() {
@@ -512,12 +518,19 @@ public class MainActivity extends BaseActivity implements
         findViewById(R.id.bottom_sheet).post(new Runnable() {
             @Override
             public void run() {
-                mBottomSheetBehavior.setPeekHeight(120);
                 mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_ANCHOR);
             }
         });
     }
-
+    @Override
+    public void hideBottomSheet() {
+        findViewById(R.id.bottom_sheet).post(new Runnable() {
+            @Override
+            public void run() {
+                mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_HIDDEN);
+            }
+        });
+    }
     @Override
     public void showBusAndStation(List<StationDto> list) {
         stationFragment = new BusStationViewPagerFragment(list);
@@ -549,6 +562,30 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
+    public void moveMapCameraTopMarker(final LatLng latLng){
+        findViewById(R.id.map).post(new Runnable() {
+            @Override
+            public void run() {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(16), new GoogleMap.CancelableCallback() {
+                    @Override
+                    public void onFinish() {
+                        mLastProjectionMarker = mMap.getProjection();
+                        Point markerPoint = mLastProjectionMarker.toScreenLocation(latLng);
+                        Point targetPoint = new Point(markerPoint.x, (int) (markerPoint.y + (findViewById(R.id.map).getHeight()*0.2)));
+                        LatLng targetPosition = mLastProjectionMarker.fromScreenLocation(targetPoint);
+                        moveMapCamera(targetPosition);
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+
+            }
+        });
+    }
     public void moveMapCameraMarker(final LatLng latLng){
         findViewById(R.id.map).post(new Runnable() {
             @Override
@@ -559,7 +596,6 @@ public class MainActivity extends BaseActivity implements
                     public void onFinish() {
                         mLastProjectionMarker = mMap.getProjection();
                     }
-
                     @Override
                     public void onCancel() {
 
@@ -604,7 +640,7 @@ public class MainActivity extends BaseActivity implements
                             .icon(BitmapDescriptorFactory.defaultMarker())
                             .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
                     mMap.addMarker(markerOptions);
-                    moveMapCamera(markerOptions.getPosition());
+                    moveMapCameraTopMarker(markerOptions.getPosition());
                     markerOptions = new MarkerOptions()
                             .title(dto.getEndCoord().getName())
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
