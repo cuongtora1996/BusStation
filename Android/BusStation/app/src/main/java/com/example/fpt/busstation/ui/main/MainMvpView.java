@@ -15,6 +15,7 @@ import java.util.List;
 public interface MainMvpView extends BaseMvpView {
     void placeStation(double lng, double lat, String address, String name, int position);
     void showBottomSheet();
+    void hideBottomSheet();
     void showBusAndStation(List<StationDto> list);
     void showRouteInstruction(List<RecommendRoutesDto> list);
 }

@@ -19,12 +19,10 @@ import java.util.Map;
 public class IntentRequest {
     public static final String TAG = IntentRequest.class.getSimpleName();
 
-    public static void sendGetRequest(String type,String lng, String lat,String dist, OnResponseStringListener listener) {
+    public static void sendGetRequest(String msg,OnResponseStringListener listener) {
         Map<String,String> param= new HashMap<>();
-        param.put("type",type);
-        param.put("long",lng);
-        param.put("lat",lat);
-        param.put("dist",dist);
+        param.put("type",8+"");
+        param.put("msg",msg);
         Log.d(TAG, param.toString());
         RestClient.getInstance().getRequest("http://192.168.1.129:81/voicebus/api.php",param,listener);
     }

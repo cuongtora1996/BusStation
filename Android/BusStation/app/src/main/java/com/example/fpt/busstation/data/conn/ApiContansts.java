@@ -26,5 +26,7 @@ public class ApiContansts {
     public final static String KEY_BUSNUM="busnum";
     public final static String KEY_ROUTENAME ="routeName";
 
-
+    public final static String KEY_BEGIN="begin";
+    public final static String KEY_END="end";
+    public final static String KEY_MESS ="mess";
 }
