@@ -15,14 +15,17 @@ import com.example.fpt.busstation.data.conn.RestClient;
 import com.example.fpt.busstation.data.conn.request.IntentRequest;
 import com.example.fpt.busstation.data.conn.request.RouteRequest;
 import com.example.fpt.busstation.data.conn.request.StationRequest;
+import com.example.fpt.busstation.data.conn.response.IntentResponse;
 import com.example.fpt.busstation.data.conn.response.RouteResponse;
 import com.example.fpt.busstation.data.conn.response.StationResponse;
+import com.example.fpt.busstation.data.db.IntentDTO;
 import com.example.fpt.busstation.service.OnResponseStringListener;
 import com.example.fpt.busstation.ui.base.BasePresenter;
 import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.BusDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,24 +51,39 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
 
 
     @Override
-    public void sendRequest(Location location) {
+    public void sendDetectRequest(final Double lng, final Double lat, String text) {
         Log.d("Send request","test");
-        IntentRequest.sendGetRequest("2", location.getLongitude()+"", location.getLatitude()+"", "20000", new OnResponseStringListener() {
+        IntentRequest.sendGetRequest(text, new OnResponseStringListener() {
             @Override
             public void onResponse(String data) {
                 try {
-                    JSONArray jsonArray = new JSONArray(data);
-                    for(int i = 0 ;i<jsonArray.length();i++){
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        double lng = jsonObject.getDouble("Long");
-                        double lat = jsonObject.getDouble("Lat");
-                        Log.d("LngLat",lng+","+lat);
-                        String address = jsonObject.getString("address");
-                        getMvpView().placeStation(lng,lat,address,"",1);
-                    }
+                    IntentDTO dto = IntentResponse.convertData(data);
 
+                    sendTTSRequest("Xác nhận "+dto.getMess());
+                    switch (dto.getType()){
+                        case 1:
+                            sendStationRequest(lng,lat,"",dto.getType());
+                            break;
+                        case 2:
+                            sendStationRequest(lng,lat,"",dto.getType());
+                            break;
+                        case 3:
+                            sendStationRequest(lng,lat,dto.getBusnum(),dto.getType());
+                            break;
+                        case 4:
+                            sendStationRequest(lng,lat,dto.getBusnum(),dto.getType());
+                            break;
+                        case 5:
+                            sendRouteRequest(lng,lat,dto.getBegin(),dto.getEnd(),dto.getType());
+                            break;
+                        case 6:
+                            sendRouteRequest(lng,lat,"",dto.getEnd(),dto.getType());
+                            break;
+                        case 7:
+                            break;
+                    }
                 }
-                catch (JSONException e){
+                catch (Exception e){
                     e.printStackTrace();
                 }
             }
@@ -78,9 +96,9 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
     }
 
     @Override
-    public void sendRouteRequest(String text) {
-        Log.d("String text",text);
-        RouteRequest.sendGetRequest(new OnResponseStringListener() {
+    public void sendRouteRequest(Double lng, Double lat,String begin, String end,int type) {
+
+        RouteRequest.sendGetRequest(lng,lat,begin, end, type,new OnResponseStringListener() {
             @Override
             public void onResponse(String data) {
                 List<RecommendRoutesDto> result = RouteResponse.convertData(data);
@@ -96,9 +114,9 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
     }
 
     @Override
-    public void sendStationRequest(String text) {
-        Log.d("String text",text);
-        StationRequest.sendGetRequest(new OnResponseStringListener() {
+    public void sendStationRequest(Double lng, Double lat,String number,int type) {
+
+        StationRequest.sendGetRequest(lng,lat,number,type,new OnResponseStringListener() {
             @Override
             public void onResponse(String data) {
                 List<StationDto> result = StationResponse.convertData(data);
