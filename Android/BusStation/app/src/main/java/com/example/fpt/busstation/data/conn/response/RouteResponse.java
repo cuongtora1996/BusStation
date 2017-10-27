@@ -25,36 +25,36 @@ public class RouteResponse {
 
     private static List<RecommendRoutesDto> recommendRoutesDtoList;
 
-    public static List<RecommendRoutesDto> convertData(String datas){
-        if(datas!=null){
+    public static List<RecommendRoutesDto> convertData(String datas) {
+        if (datas != null) {
             recommendRoutesDtoList = new ArrayList<>();
             JSONArray recommendRoutes = null;
-            try{
+            try {
                 recommendRoutes = new JSONArray(datas);
-                if(recommendRoutes.length()>0){
+                if (recommendRoutes.length() > 0) {
 
 
-                    for(int i = 0 ;i<recommendRoutes.length();i++){
-                        JSONObject recommendRoute =   recommendRoutes.getJSONObject(i);
+                    for (int i = 0; i < recommendRoutes.length(); i++) {
+                        JSONObject recommendRoute = recommendRoutes.getJSONObject(i);
                         RecommendRoutesDto recommendRoutesDto = new RecommendRoutesDto();
                         recommendRoutesDto.setDistance(recommendRoute.getDouble(ApiContansts.KEY_DISTANCE));
                         recommendRoutesDto.setDuration(recommendRoute.getDouble(ApiContansts.KEY_DURATION));
 
                         recommendRoutesDto.setListBusNo(recommendRoute.getString(ApiContansts.KEY_LISTBUS));
 
-                        String[] listBusNo  = recommendRoute.getString(ApiContansts.KEY_LISTBUS).split(",");
-                        Log.d("listBusNoArray",listBusNo[0]);
+                        String[] listBusNo = recommendRoute.getString(ApiContansts.KEY_LISTBUS).split(",");
+                        Log.d("listBusNoArray", listBusNo[0]);
                         recommendRoutesDto.setTotalBus(recommendRoute.getInt(ApiContansts.KEY_TOTALBUS));
                         recommendRoutesDto.setRecommendRouteId(recommendRoutesDto.generateRouteName());
 
                         List<Object> listInstruction = new ArrayList<>();
                         JSONArray arrayInstructions = recommendRoute.getJSONArray(ApiContansts.KEY_INSTRUCTION);
-                        if(arrayInstructions.length()>0){
+                        if (arrayInstructions.length() > 0) {
                             int count = 0;
-                            for(int j = 0 ; j<arrayInstructions.length();j++){
+                            for (int j = 0; j < arrayInstructions.length(); j++) {
                                 JSONObject jsonInstruction = arrayInstructions.getJSONObject(j);
                                 int typeIntruction = jsonInstruction.getInt(ApiContansts.KEY_TYPE);
-                                switch (typeIntruction){
+                                switch (typeIntruction) {
                                     case 1:
                                         WalkInstructionDto walk = new WalkInstructionDto();
                                         walk.setType(typeIntruction);
@@ -62,8 +62,8 @@ public class RouteResponse {
                                         walk.setEndType(jsonInstruction.getInt(ApiContansts.KEY_ENDTYPE));
                                         walk.setDuration(jsonInstruction.getDouble(ApiContansts.KEY_DURATION));
                                         walk.setDistance(jsonInstruction.getDouble(ApiContansts.KEY_DISTANCE));
-                                        if(count<listBusNo.length)
-                                        walk.setToBus(Integer.parseInt(listBusNo[count].trim()));
+                                        if (count < listBusNo.length)
+                                            walk.setToBus(Integer.parseInt(listBusNo[count].trim()));
                                         count++;
                                         CoordDto bCoord = new CoordDto();
                                         JSONObject beginCoord = jsonInstruction.getJSONObject(ApiContansts.KEY_BEGINCOORD);
@@ -84,6 +84,11 @@ public class RouteResponse {
                                         change.setType(typeIntruction);
                                         change.setDuration(jsonInstruction.getDouble(ApiContansts.KEY_DURATION));
                                         change.setDistance(jsonInstruction.getDouble(ApiContansts.KEY_DISTANCE));
+                                        if (count < listBusNo.length) {
+                                            change.setToBus(Integer.parseInt(listBusNo[count].trim()));
+                                            change.setFromBus(Integer.parseInt(listBusNo[count - 1].trim()));
+                                        }
+                                        count++;
                                         CoordDto cCoord = new CoordDto();
                                         JSONObject changeCoord = jsonInstruction.getJSONObject(ApiContansts.KEY_BEGINCOORD);
                                         cCoord.setLat(changeCoord.getDouble(ApiContansts.KEY_LAT));
@@ -95,8 +100,8 @@ public class RouteResponse {
                                     case 2:
                                         List<RouteDto> listRoute = new ArrayList<>();
                                         JSONArray arrayRoute = jsonInstruction.getJSONArray(ApiContansts.KEY_ROUTES);
-                                        if(arrayRoute.length()>0){
-                                            for(int k = 0;k<arrayRoute.length();k++){
+                                        if (arrayRoute.length() > 0) {
+                                            for (int k = 0; k < arrayRoute.length(); k++) {
                                                 JSONObject jsonRoute = arrayRoute.getJSONObject(k);
                                                 RouteDto routeDto = new RouteDto();
                                                 routeDto.setLat(jsonRoute.getDouble(ApiContansts.KEY_LAT));
@@ -122,8 +127,7 @@ public class RouteResponse {
                         recommendRoutesDtoList.add(recommendRoutesDto);
                     }
                 }
-            }
-            catch (JSONException e){
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }

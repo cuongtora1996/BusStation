@@ -3,11 +3,15 @@ package com.example.fpt.busstation.ui.main;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -48,6 +52,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CustomCap;
 import com.google.android.gms.maps.model.JointType;
@@ -66,7 +71,7 @@ public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        RouteInstructionViewPagerFragment.Callback{
+        RouteInstructionViewPagerFragment.Callback {
 
 
     private AnchorSheetBehavior mBottomSheetBehavior;
@@ -89,7 +94,8 @@ public class MainActivity extends BaseActivity implements
 
     private BusStationViewPagerFragment stationFragment;
     private RouteInstructionViewPagerFragment routeFragment;
-    private Projection mLastProjectionMarker ;
+    private Projection mLastProjectionMarker;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("OnCreate", "Fire");
@@ -114,8 +120,8 @@ public class MainActivity extends BaseActivity implements
         recordImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mLastLocation !=null)
-                mPresenter.sendRouteRequest(mLastLocation.getLongitude(),mLastLocation.getLatitude(),"","",5);
+                if (mLastLocation != null)
+                    mPresenter.sendRouteRequest(mLastLocation.getLongitude(), mLastLocation.getLatitude(), "", "", 5);
 
             }
 
@@ -158,7 +164,7 @@ public class MainActivity extends BaseActivity implements
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mBottomSheetBehavior.getState()==AnchorSheetBehavior.STATE_ANCHOR)
+                if (mBottomSheetBehavior.getState() == AnchorSheetBehavior.STATE_ANCHOR)
                     hideBottomSheet();
                 else showBottomSheet();
             }
@@ -219,7 +225,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public View getInfoContents(Marker marker) {
                 String[] stringsplit = marker.getTitle().split(",");
-                if(stringsplit.length==1) return null;
+                if (stringsplit.length == 1) return null;
                 View myContentView = null;
 
                 int type = Integer.parseInt(stringsplit[0]);
@@ -248,11 +254,11 @@ public class MainActivity extends BaseActivity implements
                 String[] stringsplit = marker.getTitle().split(",");
                 int type = Integer.parseInt(stringsplit[0]);
                 int position = Integer.parseInt(stringsplit[1]);
-                switch (type){
+                switch (type) {
                     case 1:
                         LatLng markerPosition = marker.getPosition();
                         Point markerPoint = mLastProjectionMarker.toScreenLocation(markerPosition);
-                        Point targetPoint = new Point(markerPoint.x, (int) (markerPoint.y + (findViewById(R.id.map).getHeight()*0.2)));
+                        Point targetPoint = new Point(markerPoint.x, (int) (markerPoint.y + (findViewById(R.id.map).getHeight() * 0.2)));
                         LatLng targetPosition = mLastProjectionMarker.fromScreenLocation(targetPoint);
                         moveMapCamera(targetPosition);
                         stationFragment.changeListBusCross(position);
@@ -490,8 +496,7 @@ public class MainActivity extends BaseActivity implements
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker());
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
-        }
-        else{
+        } else {
             moveMapCamera(latLng);
         }
         mCurrLocationMarker = mMap.addMarker(markerOptions);
@@ -501,13 +506,13 @@ public class MainActivity extends BaseActivity implements
 
     @Override
 
-    public void placeStation(double lng, double lat, String address, String name,int position) {
- 
+    public void placeStation(double lng, double lat, String address, String name, int position) {
+
 
         LatLng latLng = new LatLng(lat, lng);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("1,"+position+","+name);
+        markerOptions.title("1," + position + "," + name);
         markerOptions.snippet(address);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_station));
         mMap.addMarker(markerOptions);
@@ -522,6 +527,7 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
+
     @Override
     public void hideBottomSheet() {
         findViewById(R.id.bottom_sheet).post(new Runnable() {
@@ -531,6 +537,7 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
+
     @Override
     public void showBusAndStation(List<StationDto> list) {
         stationFragment = new BusStationViewPagerFragment(list);
@@ -553,7 +560,8 @@ public class MainActivity extends BaseActivity implements
                 .commit();
         showBottomSheet();
     }
-    public void moveMapCamera(final LatLng latLng){
+
+    public void moveMapCamera(final LatLng latLng) {
         findViewById(R.id.map).post(new Runnable() {
             @Override
             public void run() {
@@ -562,7 +570,8 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
-    public void moveMapCameraTopMarker(final LatLng latLng){
+
+    public void moveMapCameraTopMarker(final LatLng latLng) {
         findViewById(R.id.map).post(new Runnable() {
             @Override
             public void run() {
@@ -572,7 +581,7 @@ public class MainActivity extends BaseActivity implements
                     public void onFinish() {
                         mLastProjectionMarker = mMap.getProjection();
                         Point markerPoint = mLastProjectionMarker.toScreenLocation(latLng);
-                        Point targetPoint = new Point(markerPoint.x, (int) (markerPoint.y + (findViewById(R.id.map).getHeight()*0.2)));
+                        Point targetPoint = new Point(markerPoint.x, (int) (markerPoint.y + (findViewById(R.id.map).getHeight() * 0.2)));
                         LatLng targetPosition = mLastProjectionMarker.fromScreenLocation(targetPoint);
                         moveMapCamera(targetPosition);
                     }
@@ -586,7 +595,8 @@ public class MainActivity extends BaseActivity implements
             }
         });
     }
-    public void moveMapCameraMarker(final LatLng latLng){
+
+    public void moveMapCameraMarker(final LatLng latLng) {
         findViewById(R.id.map).post(new Runnable() {
             @Override
             public void run() {
@@ -596,6 +606,7 @@ public class MainActivity extends BaseActivity implements
                     public void onFinish() {
                         mLastProjectionMarker = mMap.getProjection();
                     }
+
                     @Override
                     public void onCancel() {
 
@@ -609,56 +620,67 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void drawRoute(List<Object> instruction) {
-        for(Object object : instruction){
-            if(object instanceof BusRouteInstructionDto){
+        for (Object object : instruction) {
+            if (object instanceof BusRouteInstructionDto) {
                 BusRouteInstructionDto dto = (BusRouteInstructionDto) object;
                 PolylineOptions polylineOptions = new PolylineOptions();
                 polylineOptions.color(Color.parseColor(dto.getColor()));
-               // polylineOptions.geodesic(true);
+                // polylineOptions.geodesic(true);
                 polylineOptions.width(5);
                 polylineOptions.clickable(true);
                 polylineOptions.jointType(JointType.ROUND);
                 polylineOptions.endCap(new RoundCap());
                 polylineOptions.startCap(new RoundCap());
-                for(RouteDto routeDto : dto.getRouteDto()){
-                    polylineOptions.add(new LatLng(routeDto.getLat(),routeDto.getLng()));
+                for (RouteDto routeDto : dto.getRouteDto()) {
+                    polylineOptions.add(new LatLng(routeDto.getLat(), routeDto.getLng()));
                 }
                 mMap.addPolyline(polylineOptions);
 
             } else {
+
                 WalkInstructionDto dto = (WalkInstructionDto) object;
-                if(dto.getType()==3){
+                if (dto.getType() == 3) {
+
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title(dto.getBeginCoord().getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                            .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
+                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_bus_strop_marker))
+                            .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
                     mMap.addMarker(markerOptions);
-                }
-                else if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
+
+                } else if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title(dto.getBeginCoord().getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker())
-                            .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
+                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_current_marker))
+                            .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
                     mMap.addMarker(markerOptions);
-                    moveMapCameraTopMarker(markerOptions.getPosition());
+                    moveMapCamera(markerOptions.getPosition());
                     markerOptions = new MarkerOptions()
                             .title(dto.getEndCoord().getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                            .position(new LatLng(dto.getEndCoord().getLat(),dto.getEndCoord().getLng()));
+                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_bus_strop_marker))
+                            .position(new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng()));
                     mMap.addMarker(markerOptions);
                 } else if (dto.getBeginType() == 2 && dto.getEndType() == 3) {
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title(dto.getBeginCoord().getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                            .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
+                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_bus_strop_marker))
+                            .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
                     mMap.addMarker(markerOptions);
                     markerOptions = new MarkerOptions()
                             .title(dto.getEndCoord().getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                            .position(new LatLng(dto.getEndCoord().getLat(),dto.getEndCoord().getLng()));
+                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_finish_marker))
+                            .position(new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng()));
                     mMap.addMarker(markerOptions);
                 }
             }
         }
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }
