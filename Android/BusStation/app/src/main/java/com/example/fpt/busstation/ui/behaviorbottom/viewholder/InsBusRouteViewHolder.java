@@ -9,6 +9,7 @@ import com.example.fpt.busstation.ui.base.BaseRcvAdapter;
 import com.example.fpt.busstation.ui.base.BaseRcvViewHolder;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.BusRouteInstructionDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RouteDto;
+import com.example.fpt.busstation.util.LayoutUtils;
 
 import java.util.List;
 
@@ -19,15 +20,14 @@ import java.util.List;
 public class InsBusRouteViewHolder extends BaseRcvViewHolder {
     CardView cardView;
     TextView tvTitle;
-    TextView tvFromStation;
-    TextView tvToStation;
+    TextView tvRouteInfo;
+    private static final int TXT_LENGTH_LIMIT = 35;
 
     public InsBusRouteViewHolder(View itemView) {
         super(itemView);
         cardView = (CardView) itemView.findViewById(R.id.cvInsBusRoute);
         tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-        tvFromStation = (TextView) itemView.findViewById(R.id.tvFromStation);
-        tvToStation = (TextView) itemView.findViewById(R.id.tvToStation);
+        tvRouteInfo = (TextView) itemView.findViewById(R.id.tvRouteInfo);
     }
 
     @Override
@@ -35,12 +35,16 @@ public class InsBusRouteViewHolder extends BaseRcvViewHolder {
         BusRouteInstructionDto dto = (BusRouteInstructionDto) item;
         tvTitle.setText("Đi tuyến xe số " + dto.getBusNum());
         List<RouteDto> routeDtos = dto.getRouteDto();
+        String fromStation = "", toStation = "";
         if (routeDtos.get(0).getType() == 1) {
-            tvFromStation.setText(routeDtos.get(0).getName() + " - ");
+            fromStation = routeDtos.get(0).getName() + " - ";
         }
         if (routeDtos.get(routeDtos.size() - 1).getType() == 1) {
-            tvToStation.setText(routeDtos.get(routeDtos.size() - 1).getName());
+            toStation = routeDtos.get(routeDtos.size() - 1).getName();
         }
+        String mess = fromStation + toStation;
+        LayoutUtils.setLinesForTextView(mess, TXT_LENGTH_LIMIT,tvRouteInfo);
+        tvRouteInfo.setText(mess);
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

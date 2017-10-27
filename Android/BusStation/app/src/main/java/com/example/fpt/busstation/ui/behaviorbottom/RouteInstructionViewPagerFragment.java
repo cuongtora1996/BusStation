@@ -3,6 +3,7 @@ package com.example.fpt.busstation.ui.behaviorbottom;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
     RecommendRoutesFragment recommendRoutesFragment;
     InstructionFragment instructionFragment;
     List<RecommendRoutesDto> recommendRoutes;
+
     public Callback getCallback() {
         return callback;
     }
@@ -129,7 +131,8 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
         instructionFragment.changeInstruction(getRecommendRoutes().get(position).getInstruction());
         viewPager.setCurrentItem(1);
     }
-    public interface Callback{
+
+    public interface Callback {
         void drawRoute(List<Object> instruction);
     }
 }

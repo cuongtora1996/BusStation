@@ -14,32 +14,33 @@ import com.example.fpt.busstation.util.LayoutUtils;
  * Created by Vi Nguyen on 22/10/2017.
  */
 
-public class InsWalkEndViewHolder extends BaseRcvViewHolder {
+public class InsWalkBetween2StationViewHolder extends BaseRcvViewHolder {
     CardView cardView;
-    TextView tvFromStation;
-    TextView tvWalkTo;
+    TextView tvTitle;
+    TextView tvOffStation;
+    TextView tvBusNum;
     private static final int TXT_LENGTH_LIMIT = 35;
 
-    public InsWalkEndViewHolder(View itemView) {
+    public InsWalkBetween2StationViewHolder(View itemView) {
         super(itemView);
-        cardView = (CardView) itemView.findViewById(R.id.cvInsWalkEnd);
-        tvFromStation = (TextView) itemView.findViewById(R.id.tvFromStation);
-        tvWalkTo = (TextView) itemView.findViewById(R.id.tvWalkTo);
+        cardView = (CardView) itemView.findViewById(R.id.cvInsWalkBetween);
+        tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+        tvOffStation = (TextView) itemView.findViewById(R.id.tvOffStation);
+        tvBusNum = (TextView) itemView.findViewById(R.id.tvBusNum);
 
     }
 
     @Override
     public void bindItem(final BaseRcvAdapter.OnItemListener listener, final Object item, final int position) {
         WalkInstructionDto walkIns = (WalkInstructionDto) item;
-        if (walkIns.getEndType() == 3) {//toi diem can den
-            String mess = "Xuống xe tại trạm " + walkIns.getBeginCoord().getName();
-            LayoutUtils.setLinesForTextView(mess, TXT_LENGTH_LIMIT, tvFromStation);
-            tvFromStation.setText(mess);
-        }
+        tvTitle.setText("Đi bộ đến trạm " + walkIns.getEndCoord().getName());
+        String mess = "Xuống xe tại trạm " + walkIns.getBeginCoord().getName();
+        LayoutUtils.setLinesForTextView(mess, TXT_LENGTH_LIMIT, tvOffStation);
+        tvOffStation.setText(mess);
+        String mess1 = "Đón tuyến số " + walkIns.getToBus() + " tại trạm " + walkIns.getEndCoord().getName();
+        LayoutUtils.setLinesForTextView(mess1, TXT_LENGTH_LIMIT, tvBusNum);
+        tvBusNum.setText(mess1);
 
-        String mess2 = "Đi bộ đến " + walkIns.getEndCoord().getName();
-        LayoutUtils.setLinesForTextView(mess2, TXT_LENGTH_LIMIT, tvWalkTo);
-        tvWalkTo.setText(mess2);
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
