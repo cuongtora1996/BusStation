@@ -23,18 +23,17 @@
 
             <ImageView
                 android:id="@+id/ivPerson"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:src="@drawable/ic_person"
                 android:textColor="#101010" />
 
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@+id/ivPerson"
-                android:columnCount="2"
+                android:columnCount="1"
                 android:paddingTop="5dp">
 
                 <TextView
@@ -42,12 +41,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_column="0"
-                    android:layout_columnSpan="2"
                     android:layout_row="0"
                     android:text="[Chuyển tuyến]"
-                    android:textColor="#101010"
+                    android:textColor="@color/titleColor"
                     android:textSize="16dp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvOffStation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_row="2"
+                    android:text="[Tại trạm]"
+                    android:textColor="#101010"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/tvBusNum"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:text="[Đón tuyến]"
+                    android:textColor="#101010"
+                    android:textSize="16dp" />
             </GridLayout>
 
         </RelativeLayout>
