@@ -653,7 +653,7 @@ public class MainActivity extends BaseActivity implements
                             .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_current_marker))
                             .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
                     mMap.addMarker(markerOptions);
-                    moveMapCamera(markerOptions.getPosition());
+                    moveMapCameraTopMarker(markerOptions.getPosition());
                     markerOptions = new MarkerOptions()
                             .title(dto.getEndCoord().getName())
                             .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_bus_strop_marker))
