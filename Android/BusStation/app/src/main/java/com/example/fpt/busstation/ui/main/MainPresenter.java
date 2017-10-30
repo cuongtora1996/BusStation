@@ -102,7 +102,7 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
             @Override
             public void onResponse(String data) {
                 List<RecommendRoutesDto> result = RouteResponse.convertData(data);
-
+                getMvpView().removeAllMarkerAndPolyline();
                 getMvpView().showRouteInstruction(result);
             }
 
@@ -120,6 +120,7 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
             @Override
             public void onResponse(String data) {
                 List<StationDto> result = StationResponse.convertData(data);
+                getMvpView().removeAllMarkerAndPolyline();
                 for(int i = 0 ;i<result.size();i++){
                     StationDto dto = result.get(i);
                     getMvpView().placeStation(dto.getLng(),dto.getLat(),dto.getStationAddress(),dto.getStationName(),i);
