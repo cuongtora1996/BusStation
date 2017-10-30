@@ -140,11 +140,10 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
 
-                if(newState == AnchorSheetBehavior.STATE_EXPANDED){
+                if (newState == AnchorSheetBehavior.STATE_EXPANDED) {
                     mFab.setVisibility(View.GONE);
                     recordImgView.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     mFab.setVisibility(View.VISIBLE);
                     recordImgView.setVisibility(View.VISIBLE);
                 }
@@ -157,14 +156,10 @@ public class MainActivity extends BaseActivity implements
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-<<<<<<< HEAD
-                if (mBottomSheetBehavior.getState() == AnchorSheetBehavior.STATE_ANCHOR)
-=======
-                if(routeFragment !=null || stationFragment !=null)
-                if(mBottomSheetBehavior.getState()==AnchorSheetBehavior.STATE_ANCHOR)
->>>>>>> refs/remotes/origin/master
-                    hideBottomSheet();
-                else showBottomSheet();
+                if (routeFragment != null || stationFragment != null)
+                    if (mBottomSheetBehavior.getState() == AnchorSheetBehavior.STATE_ANCHOR)
+                        hideBottomSheet();
+                    else showBottomSheet();
             }
         });
         /*btTest.setOnTouchListener(new View.OnTouchListener() {
@@ -619,14 +614,10 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void drawRoute(List<Object> instruction) {
-<<<<<<< HEAD
+
+        removeAllMarkerAndPolyline();
         for (Object object : instruction) {
             if (object instanceof BusRouteInstructionDto) {
-=======
-        removeAllMarkerAndPolyline();
-        for(Object object : instruction){
-            if(object instanceof BusRouteInstructionDto){
->>>>>>> refs/remotes/origin/master
                 BusRouteInstructionDto dto = (BusRouteInstructionDto) object;
                 PolylineOptions polylineOptions = new PolylineOptions();
                 polylineOptions.color(Color.parseColor(dto.getColor()));
@@ -642,75 +633,41 @@ public class MainActivity extends BaseActivity implements
                 listPolyline.add(mMap.addPolyline(polylineOptions));
 
             } else {
-
                 WalkInstructionDto dto = (WalkInstructionDto) object;
                 if (dto.getType() == 3) {
-
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title(dto.getBeginCoord().getName())
-<<<<<<< HEAD
-                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_bus_strop_marker))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                             .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
-                    mMap.addMarker(markerOptions);
+                    listMarker.add(mMap.addMarker(markerOptions));
 
                 } else if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title(dto.getBeginCoord().getName())
-                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_current_marker))
-                            .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
-                    mMap.addMarker(markerOptions);
-                    moveMapCameraTopMarker(markerOptions.getPosition());
-                    markerOptions = new MarkerOptions()
-                            .title(dto.getEndCoord().getName())
-                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_bus_strop_marker))
-                            .position(new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng()));
-                    mMap.addMarker(markerOptions);
-                } else if (dto.getBeginType() == 2 && dto.getEndType() == 3) {
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .title(dto.getBeginCoord().getName())
-                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_bus_strop_marker))
-                            .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
-                    mMap.addMarker(markerOptions);
-                    markerOptions = new MarkerOptions()
-                            .title(dto.getEndCoord().getName())
-                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_finish_marker))
-                            .position(new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng()));
-                    mMap.addMarker(markerOptions);
-=======
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                            .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
-                    listMarker.add(mMap.addMarker(markerOptions));
-
-                }
-                else if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .title(dto.getBeginCoord().getName())
                             .icon(BitmapDescriptorFactory.defaultMarker())
-                            .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
+                            .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
                     listMarker.add(mMap.addMarker(markerOptions));
                     moveMapCameraTopMarker(markerOptions.getPosition());
                     markerOptions = new MarkerOptions()
                             .title(dto.getEndCoord().getName())
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                            .position(new LatLng(dto.getEndCoord().getLat(),dto.getEndCoord().getLng()));
+                            .position(new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng()));
                     listMarker.add(mMap.addMarker(markerOptions));
                 } else if (dto.getBeginType() == 2 && dto.getEndType() == 3) {
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title(dto.getBeginCoord().getName())
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                            .position(new LatLng(dto.getBeginCoord().getLat(),dto.getBeginCoord().getLng()));
+                            .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
                     listMarker.add(mMap.addMarker(markerOptions));
                     markerOptions = new MarkerOptions()
                             .title(dto.getEndCoord().getName())
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                            .position(new LatLng(dto.getEndCoord().getLat(),dto.getEndCoord().getLng()));
+                            .position(new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng()));
                     listMarker.add(mMap.addMarker(markerOptions));
->>>>>>> refs/remotes/origin/master
                 }
             }
         }
     }
-<<<<<<< HEAD
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
@@ -719,15 +676,16 @@ public class MainActivity extends BaseActivity implements
         Canvas canvas = new Canvas(bitmap);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
-=======
+
+    }
+
     @Override
-    public void removeAllMarkerAndPolyline(){
-        for(Marker m: listMarker){
+    public void removeAllMarkerAndPolyline() {
+        for (Marker m : listMarker) {
             m.remove();
         }
-        for(Polyline p: listPolyline){
+        for (Polyline p : listPolyline) {
             p.remove();
         }
->>>>>>> refs/remotes/origin/master
     }
 }
