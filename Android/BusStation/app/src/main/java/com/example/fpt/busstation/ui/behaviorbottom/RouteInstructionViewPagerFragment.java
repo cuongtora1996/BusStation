@@ -3,22 +3,16 @@ package com.example.fpt.busstation.ui.behaviorbottom;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.ui.base.BaseFragment;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.BusRouteInstructionDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.CoordDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.RouteDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.WalkInstructionDto;
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.InstructionFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.RecommendRoutesFragment;
 import com.example.fpt.busstation.util.BottomSheetUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +20,7 @@ import java.util.List;
  */
 
 public class RouteInstructionViewPagerFragment extends BaseFragment implements RecommendRoutesFragment.Callback {
-    ViewPager viewPager;
+    CustomViewPager viewPager;
     RouteInstructionPagerAdapter pagerAdapter;
     TabLayout tabLayout;
     RecommendRoutesFragment recommendRoutesFragment;
@@ -44,7 +38,7 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
     Callback callback;
 
     private static final int NUMBER_TAB = 2;
-    private static final int[] tabIcons = {R.drawable.ic_route_item, R.drawable.ic_direction_tab_icon};
+    private static final int[] tabIcons = {R.drawable.ic_tab_icon_route, R.drawable.ic_tab_icon_direction};
 
 
     public List<RecommendRoutesDto> getRecommendRoutes() {
@@ -78,7 +72,7 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
         instructionFragment = new InstructionFragment();
         instructionFragment.setListDto(getRecommendRoutes().get(0).getInstruction());
 
-        viewPager = (ViewPager) view.findViewById(R.id.vpRouteInstruction);
+        viewPager = (CustomViewPager) view.findViewById(R.id.vpRouteInstruction);
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) view.findViewById(R.id.tlRouteInstruction);
@@ -86,6 +80,7 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
         setupTabAttribute(viewPager, tabLayout);
 
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
+        viewPager.setPagingEnabled(false);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         BottomSheetUtils.setupViewPager(viewPager, getBaseActivity().findViewById(R.id.bottom_sheet));
