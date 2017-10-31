@@ -17,12 +17,10 @@ public class StationRequest {
 
     public static void sendGetRequest(Double lng, Double lat, String numbus,int type,OnResponseStringListener listener) {
         Map<String,String> param= new HashMap<>();
-        //param.put("type",type+"");
-        //param.put("long",lng+"");
-        //param.put("lat",lat+"");
-        //if(type==3 or type==4)
-        //param.put("bus",numbus);
-        RestClient.getInstance().getRequest("https://api.myjson.com/bins/1d6bjb",param,listener);
+        //Cuong
+//        RestClient.getInstance().getRequest("https://api.myjson.com/bins/1d6bjb",param,listener);
+        //FIXME - Vi - updated json
+        RestClient.getInstance().getRequest("https://api.myjson.com/bins/9x65n",param,listener);
     }
 
 }

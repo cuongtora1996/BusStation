@@ -18,15 +18,10 @@ public class RouteRequest {
 
     public static void sendGetRequest(Double lng, Double lat, String begin, String end, int type,OnResponseStringListener listener) {
         Map<String,String> param= new HashMap<>();
-//        param.put("type",type+"");
-//        if(type==5)
-//            param.put("begin",begin);
-//        else{
-//            param.put("long",lng+"");
-//            param.put("lat",lat+"");
-//        }
-//        param.put("end",end);
-        RestClient.getInstance().getRequest("https://api.myjson.com/bins/t87on",param,listener);
+        //Cuong - first api
+//        RestClient.getInstance().getRequest("https://api.myjson.com/bins/t87on",param,listener);
+        //FIXME Vi - latest api
+        RestClient.getInstance().getRequest("https://api.myjson.com/bins/12uu5n",param,listener);
     }
 
 }
