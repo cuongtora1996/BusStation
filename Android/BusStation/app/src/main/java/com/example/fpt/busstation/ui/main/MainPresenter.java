@@ -1,13 +1,10 @@
 package com.example.fpt.busstation.ui.main;
 
 import android.Manifest;
-import android.content.Intent;
-import android.location.Location;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.speech.RecognizerIntent;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
@@ -21,20 +18,14 @@ import com.example.fpt.busstation.data.conn.response.StationResponse;
 import com.example.fpt.busstation.data.db.IntentDTO;
 import com.example.fpt.busstation.service.OnResponseStringListener;
 import com.example.fpt.busstation.ui.base.BasePresenter;
-import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.BusDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
-import com.google.android.gms.maps.model.LatLng;
+import com.example.fpt.busstation.data.db.RecommendRoutesDto;
+import com.example.fpt.busstation.data.db.StationDto;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
-import java.util.Random;
 
 /**
  * Created by cuong on 9/13/2017.

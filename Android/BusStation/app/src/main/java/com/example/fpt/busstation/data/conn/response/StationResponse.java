@@ -1,11 +1,8 @@
 package com.example.fpt.busstation.data.conn.response;
 
-import android.util.Log;
-
 import com.example.fpt.busstation.data.conn.ApiContansts;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.BusDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
+import com.example.fpt.busstation.data.db.BusDto;
+import com.example.fpt.busstation.data.db.StationDto;
 
 import org.json.JSONArray;
 import org.json.JSONException;

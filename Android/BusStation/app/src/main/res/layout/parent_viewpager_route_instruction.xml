@@ -20,7 +20,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.example.fpt.busstation.ui.behaviorbottom.CustomViewPager
+    <com.example.fpt.busstation.service.CustomViewPager
         android:id="@+id/vpRouteInstruction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
