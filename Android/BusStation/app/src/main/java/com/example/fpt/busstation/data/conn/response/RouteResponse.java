@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.fpt.busstation.data.conn.ApiContansts;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.BusRouteInstructionDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.CoordDto;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.PointDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RouteDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.WalkInstructionDto;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by cuong on 10/23/2017.
+ * Modified by Vi Nguyen on 10/31/2017.
  */
 
 public class RouteResponse {
@@ -25,23 +26,19 @@ public class RouteResponse {
 
     private static List<RecommendRoutesDto> recommendRoutesDtoList;
 
-    public static List<RecommendRoutesDto> convertData(String datas) {
-        if (datas != null) {
+    public static List<RecommendRoutesDto> convertData(String data) {
+        Log.d("===convertData", "data: " + data.length());
+        if (data != null) {
             recommendRoutesDtoList = new ArrayList<>();
             JSONArray recommendRoutes = null;
             try {
-                recommendRoutes = new JSONArray(datas);
+                recommendRoutes = new JSONArray(data);
                 if (recommendRoutes.length() > 0) {
-
-
                     for (int i = 0; i < recommendRoutes.length(); i++) {
                         JSONObject recommendRoute = recommendRoutes.getJSONObject(i);
                         RecommendRoutesDto recommendRoutesDto = new RecommendRoutesDto();
-                        recommendRoutesDto.setDistance(recommendRoute.getDouble(ApiContansts.KEY_DISTANCE));
                         recommendRoutesDto.setDuration(recommendRoute.getDouble(ApiContansts.KEY_DURATION));
-
                         recommendRoutesDto.setListBusNo(recommendRoute.getString(ApiContansts.KEY_LISTBUS));
-
                         String[] listBusNo = recommendRoute.getString(ApiContansts.KEY_LISTBUS).split(",");
                         Log.d("listBusNoArray", listBusNo[0]);
                         recommendRoutesDto.setTotalBus(recommendRoute.getInt(ApiContansts.KEY_TOTALBUS));
@@ -98,17 +95,28 @@ public class RouteResponse {
                                         listInstruction.add(change);
                                         break;
                                     case 2:
-                                        List<RouteDto> listRoute = new ArrayList<>();
-                                        JSONArray arrayRoute = jsonInstruction.getJSONArray(ApiContansts.KEY_ROUTES);
-                                        if (arrayRoute.length() > 0) {
-                                            for (int k = 0; k < arrayRoute.length(); k++) {
-                                                JSONObject jsonRoute = arrayRoute.getJSONObject(k);
-                                                RouteDto routeDto = new RouteDto();
-                                                routeDto.setLat(jsonRoute.getDouble(ApiContansts.KEY_LAT));
-                                                routeDto.setLng(jsonRoute.getDouble(ApiContansts.KEY_LNG));
-                                                routeDto.setName(jsonRoute.getString(ApiContansts.KEY_NAME));
-                                                routeDto.setType(jsonRoute.getInt(ApiContansts.KEY_TYPE));
-                                                listRoute.add(routeDto);
+                                        List<CoordDto> listStations = new ArrayList<>();
+                                        JSONArray arrayStation = jsonInstruction.getJSONArray(ApiContansts.KEY_STATIONS);
+                                        if (arrayStation.length() > 0) {
+                                            for (int k = 0; k < arrayStation.length(); k++) {
+                                                JSONObject jsonRoute = arrayStation.getJSONObject(k);
+                                                CoordDto coordDto = new CoordDto();
+                                                coordDto.setLat(jsonRoute.getDouble(ApiContansts.KEY_LAT));
+                                                coordDto.setLng(jsonRoute.getDouble(ApiContansts.KEY_LNG));
+                                                coordDto.setName(jsonRoute.getString(ApiContansts.KEY_NAME));
+
+                                                listStations.add(coordDto);
+                                            }
+                                        }
+                                        List<PointDto> listPointDtos = new ArrayList<>();
+                                        JSONArray arrayPath = jsonInstruction.getJSONArray(ApiContansts.KEY_PATH);
+                                        if (arrayPath.length() > 0) {
+                                            for (int l = 0; l < arrayPath.length(); l++) {
+                                                JSONObject jsonPath = arrayPath.getJSONObject(l);
+                                                PointDto pointDto = new PointDto();
+                                                pointDto.setLat(jsonPath.getDouble(ApiContansts.KEY_LAT));
+                                                pointDto.setLng(jsonPath.getDouble(ApiContansts.KEY_LNG));
+                                                listPointDtos.add(pointDto);
                                             }
                                         }
                                         BusRouteInstructionDto bus = new BusRouteInstructionDto();
@@ -117,8 +125,9 @@ public class RouteResponse {
                                         bus.setBusNum(jsonInstruction.getInt(ApiContansts.KEY_BUSNUM));
                                         bus.setDistance(jsonInstruction.getDouble(ApiContansts.KEY_DISTANCE));
                                         bus.setDuration(jsonInstruction.getDouble(ApiContansts.KEY_DURATION));
-                                        bus.setRouteDto(listRoute);
                                         listInstruction.add(bus);
+                                        bus.setStations(listStations);
+                                        bus.setPath(listPointDtos);
                                         break;
                                 }
                             }

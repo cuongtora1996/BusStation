@@ -6,9 +6,16 @@ import java.util.List;
  * Created by Vi Nguyen on 21/10/2017.
  */
 
+/**
+ * BusRouteInstructionDto
+ * contain instructions for bus route
+ * be converted from response data
+ * used for bindIntem in cardview "Bus-route" and draw route on map in MainActivity: drawRoute()
+ */
 public class BusRouteInstructionDto {
     private int type;
-    private List<RouteDto> routeDto;
+    private List<CoordDto> stations;
+    private List<PointDto> path;
     private String color;
     private int busNum;
     private double duration;
@@ -17,9 +24,10 @@ public class BusRouteInstructionDto {
     public BusRouteInstructionDto() {
     }
 
-    public BusRouteInstructionDto(int type, List<RouteDto> routeDto, String color, int busNum, double duration, double distance) {
+    public BusRouteInstructionDto(int type, List<CoordDto> stations, List<PointDto> path, String color, int busNum, double duration, double distance) {
         this.type = type;
-        this.routeDto = routeDto;
+        this.stations = stations;
+        this.path = path;
         this.color = color;
         this.busNum = busNum;
         this.duration = duration;
@@ -34,12 +42,20 @@ public class BusRouteInstructionDto {
         this.type = type;
     }
 
-    public List<RouteDto> getRouteDto() {
-        return routeDto;
+    public List<CoordDto> getStations() {
+        return stations;
     }
 
-    public void setRouteDto(List<RouteDto> routeDto) {
-        this.routeDto = routeDto;
+    public void setStations(List<CoordDto> stations) {
+        this.stations = stations;
+    }
+
+    public List<PointDto> getPath() {
+        return path;
+    }
+
+    public void setPath(List<PointDto> path) {
+        this.path = path;
     }
 
     public String getColor() {
