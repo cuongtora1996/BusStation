@@ -76,7 +76,6 @@ public class MainActivity extends BaseActivity implements
         LocationListener,
         MainActivityCallbacks {
 
-
     private AnchorSheetBehavior mBottomSheetBehavior;
     private MainMvpPresenter<MainMvpView> mPresenter;
     private FloatingActionButton recordImgView;
@@ -127,15 +126,14 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 if (mLastLocation != null)
-//                    mPresenter.sendRouteRequest(mLastLocation.getLongitude(), mLastLocation.getLatitude(), "", "", 5);
-                    mPresenter.sendStationRequest(mLastLocation.getLongitude(), mLastLocation.getLatitude(), "", 5);
+                    mPresenter.sendRouteRequest(mLastLocation.getLongitude(), mLastLocation.getLatitude(), "", "", 5);
+//                    mPresenter.sendStationRequest(mLastLocation.getLongitude(), mLastLocation.getLatitude(), "", 5);
 
             }
 
         });
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mBottomSheetBehavior = AnchorSheetBehavior.from(findViewById(R.id.bottom_sheet));
-
         mBottomSheetBehavior.setHideable(true);
         mBottomSheetBehavior.setPeekHeight(240);
         mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_HIDDEN);
@@ -228,43 +226,39 @@ public class MainActivity extends BaseActivity implements
                 int type = Integer.parseInt(stringsplit[0]);
                 String titleString = stringsplit[2];
                 switch (type) {
-
                     case 1:
                         myContentView = getLayoutInflater().inflate(R.layout.custom_marker_station, null);
                         TextView title = (TextView) myContentView.findViewById(R.id.title);
                         title.setText(titleString);
                         TextView snippet = (TextView) myContentView.findViewById(R.id.snippet);
                         snippet.setText(marker.getSnippet());
-
                         break;
-                    case 2: //FIXME: Vi
+                    case 2:
                         myContentView = getLayoutInflater().inflate(R.layout.custom_marker_station, null);
                         TextView route = (TextView) myContentView.findViewById(R.id.title);
                         route.setText(titleString);
                         TextView snippetRoute = (TextView) myContentView.findViewById(R.id.snippet);
                         snippetRoute.setText(marker.getSnippet());
                         break;
-
-
+                    case 4:
+                        myContentView = getLayoutInflater().inflate(R.layout.custom_marker_station_just_info, null);
+                        TextView station = (TextView) myContentView.findViewById(R.id.stationName);
+                        station.setText("Trạm " + titleString);
+                        break;
                 }
-
-
                 return myContentView;
             }
         });
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(final Marker marker) {
-
                 String[] stringsplit = marker.getTitle().split(",");
                 if (stringsplit.length == 1) return;
                 int type = Integer.parseInt(stringsplit[0]);
                 int position = Integer.parseInt(stringsplit[1]);
                 LatLng markerPosition, targetPosition;
                 Point markerPoint, targetPoint;
-
                 switch (type) {
-
                     case 1:
                         markerPosition = marker.getPosition();
                         markerPoint = mLastProjectionMarker.toScreenLocation(markerPosition);
@@ -274,20 +268,15 @@ public class MainActivity extends BaseActivity implements
                         stationFragment.changeListBusCross(position);
                         showBottomSheet();
                         break;
-                    case 2: //FIXME: Vi
+                    case 2:
                         markerPosition = marker.getPosition();
                         markerPoint = mLastProjectionMarker.toScreenLocation(markerPosition);
                         targetPoint = new Point(markerPoint.x, (int) (markerPoint.y + (findViewById(R.id.map).getHeight() * 0.2)));
                         targetPosition = mLastProjectionMarker.fromScreenLocation(targetPoint);
                         moveMapCamera(targetPosition);
-//                        routeFragment.changeInstruction(position);
-                        //FIXME Vi
-
                         showBottomSheet();
                         break;
-
                 }
-
             }
         });
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -309,7 +298,6 @@ public class MainActivity extends BaseActivity implements
             case PERMISSION_LOCATION:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     // permission was granted, yay!
                     if (ContextCompat.checkSelfPermission(this,
                             android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -416,9 +404,7 @@ public class MainActivity extends BaseActivity implements
             if (mGoogleApiClient.isConnected()) {
                 Log.d("======>", "PrepareStartLocationUpdate");
                 startLocationUpdate();
-
             }
-
     }
 
     @Override
@@ -428,8 +414,6 @@ public class MainActivity extends BaseActivity implements
         mLocationRequest.setInterval(20000);
         mLocationRequest.setFastestInterval(20000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
-
         //request user to open gps
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
         builder.setAlwaysShow(true);
@@ -467,7 +451,6 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("onActivityResult()", Integer.toString(resultCode));
-
         //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
         switch (requestCode) {
             case REQUEST_LOCATION:
@@ -498,12 +481,10 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
@@ -665,7 +646,6 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void drawRouteCB(List<Object> instruction) {
-
         removeAllMarkerAndPolyline();
         for (int i = 0; i < instruction.size(); i++) {
             if (instruction.get(i) instanceof BusRouteInstructionDto) {
@@ -678,15 +658,18 @@ public class MainActivity extends BaseActivity implements
                 polylineOptions.jointType(JointType.ROUND);
                 polylineOptions.endCap(new RoundCap());
                 polylineOptions.startCap(new RoundCap());
-//                for (RouteDto routeDto : dto.getRouteDto()) {
-//                    polylineOptions.add(new LatLng(routeDto.getLat(), routeDto.getLng()));
-//                }
-                //FIXME Vi
-                for (PointDto pointDto : dto.getPath()) {
+                for (int j = 0; j < dto.getStations().size(); j++) {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .title("4," + j + "," + dto.getStations().get(j).getName())
+                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_marker_station))
+                            .position(new LatLng(dto.getStations().get(j).getLat(), dto.getStations().get(j).getLng()));
+                    listMarker.add(mMap.addMarker(markerOptions));
+                }
+                for (int j = 0; j < dto.getPath().size(); j++) {
+                    PointDto pointDto = dto.getPath().get(j);
                     polylineOptions.add(new LatLng(pointDto.getLat(), pointDto.getLng()));
                 }
                 listPolyline.add(mMap.addPolyline(polylineOptions));
-
             } else {
                 WalkInstructionDto dto = (WalkInstructionDto) instruction.get(i);
                 if (dto.getType() == 3) {
@@ -730,12 +713,8 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void moveToMarkerAndShowInfo(int position) {
-
-
         listMarker.get(position).showInfoWindow();
-
         moveMapCameraTopMarker(listMarker.get(position).getPosition());
-
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
@@ -745,7 +724,6 @@ public class MainActivity extends BaseActivity implements
         Canvas canvas = new Canvas(bitmap);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
-
     }
 
     @Override
