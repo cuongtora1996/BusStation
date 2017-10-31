@@ -27,7 +27,7 @@
                 android:layout_height="45dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/ic_school_bus_item" />
+                android:src="@drawable/ic_tab_item_school_bus" />
 
             <GridLayout
                 android:layout_width="match_parent"

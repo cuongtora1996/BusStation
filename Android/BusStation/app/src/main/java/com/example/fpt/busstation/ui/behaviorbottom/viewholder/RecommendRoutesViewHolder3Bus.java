@@ -9,6 +9,7 @@ import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.ui.base.BaseRcvAdapter;
 import com.example.fpt.busstation.ui.base.BaseRcvViewHolder;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
+import com.example.fpt.busstation.util.LayoutUtils;
 
 /**
  * Created by Vi Nguyen on 21/10/2017.
@@ -36,15 +37,8 @@ public class RecommendRoutesViewHolder3Bus extends BaseRcvViewHolder {
     public void bindItem(final BaseRcvAdapter.OnItemListener listener, final Object item, final int position) {
         RecommendRoutesDto dto = (RecommendRoutesDto) item;
         tvRouteName.setText(((RecommendRoutesDto) item).generateRouteName());
-        String timeUnit = "phút";
-        Double duration = dto.getDuration();
-
-        if (duration >= 100) {
-            duration = duration / 100;
-            timeUnit = "giờ";
-        }
-
-        tvDuration.setText(String.valueOf((double) Math.round(duration)) + "\n" + timeUnit);
+        String txtDuration = LayoutUtils.handleDisplayTime(dto.getDuration());
+        tvDuration.setText(txtDuration);
         String[] busNumber = ((RecommendRoutesDto) item).getListBusNo().split(", ");
         if (busNumber.length == 3) {
             tvNoOfBus1.setText(busNumber[0]);

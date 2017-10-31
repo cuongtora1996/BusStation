@@ -26,7 +26,7 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="05dp"
-                android:src="@drawable/ic_station_item_2" />
+                android:src="@drawable/ic_tab_item_station" />
 
             <GridLayout
                 android:layout_width="match_parent"

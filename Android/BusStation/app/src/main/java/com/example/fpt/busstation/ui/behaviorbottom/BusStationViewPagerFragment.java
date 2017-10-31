@@ -5,7 +5,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.support.v7.widget.Toolbar;
 
 import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.ui.base.BaseFragment;
@@ -21,13 +20,13 @@ import java.util.List;
  */
 
 public class BusStationViewPagerFragment extends BaseFragment implements StationFragment.Callback {
-    ViewPager viewPager;
+    CustomViewPager viewPager;
     TabLayout tabLayout;
     BusFragment busFragment;
     StationFragment stationFragment;
     List<StationDto> stationDtoList;
     private static final int NUMBER_TAB = 2;
-    private static final int[] tabIcons = {R.drawable.ic_station_for_tab_icon, R.drawable.ic_bus_for_tab_icon};
+    private static final int[] tabIcons = {R.drawable.ic_tab_icon_station, R.drawable.ic_tab_icon_bus};
 
     public BusStationViewPagerFragment() {
     }
@@ -54,7 +53,7 @@ public class BusStationViewPagerFragment extends BaseFragment implements Station
         busFragment = new BusFragment();
         busFragment.setBusDtoList(getStationDtoList().get(0).getListBus());
 
-        viewPager = (ViewPager) view.findViewById(R.id.vpBusStation);
+        viewPager = (CustomViewPager) view.findViewById(R.id.vpBusStation);
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) view.findViewById(R.id.tlBusStation);
@@ -62,6 +61,7 @@ public class BusStationViewPagerFragment extends BaseFragment implements Station
         setupTabAttribute(viewPager, tabLayout);
 
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
+        viewPager.setPagingEnabled(false);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         BottomSheetUtils.setupViewPager(viewPager, getBaseActivity().findViewById(R.id.bottom_sheet));

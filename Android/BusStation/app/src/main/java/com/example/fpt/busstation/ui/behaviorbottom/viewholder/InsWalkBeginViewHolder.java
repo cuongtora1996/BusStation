@@ -8,6 +8,7 @@ import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.ui.base.BaseRcvAdapter;
 import com.example.fpt.busstation.ui.base.BaseRcvViewHolder;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.WalkInstructionDto;
+import com.example.fpt.busstation.util.LayoutUtils;
 
 /**
  * Created by Vi Nguyen on 22/10/2017.
@@ -19,6 +20,7 @@ public class InsWalkBeginViewHolder extends BaseRcvViewHolder {
     TextView tvStart;
     TextView tvBusNum;
     TextView tvFromStation;
+    private static final int TXT_LENGTH_LIMIT = 35;
 
     public InsWalkBeginViewHolder(View itemView) {
         super(itemView);
@@ -36,8 +38,14 @@ public class InsWalkBeginViewHolder extends BaseRcvViewHolder {
             tvTitle.setText("Đón tuyến số " + walkIns.getToBus());
             tvBusNum.setText("Đón tuyến số " + walkIns.getToBus());
         }
-        tvStart.setText("Xuất phát từ trạm " + walkIns.getBeginCoord().getName());
-        tvFromStation.setText(" tại trạm " + walkIns.getEndCoord().getName());
+
+        String mess = "Xuất phát từ " + walkIns.getBeginCoord().getName();
+        LayoutUtils.setLinesForTextView(mess, TXT_LENGTH_LIMIT, tvStart);
+        tvStart.setText(mess);
+
+        String mess2 = "Tại trạm " + walkIns.getEndCoord().getName();
+        LayoutUtils.setLinesForTextView(mess, TXT_LENGTH_LIMIT, tvFromStation);
+        tvFromStation.setText(mess2);
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
