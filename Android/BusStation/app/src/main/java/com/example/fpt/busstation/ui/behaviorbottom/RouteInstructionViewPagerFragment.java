@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.fpt.busstation.R;
+import com.example.fpt.busstation.service.MainActivityCallbacks;
 import com.example.fpt.busstation.ui.base.BaseFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.InstructionFragment;
@@ -31,15 +32,15 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
     InstructionFragment instructionFragment;
     List<RecommendRoutesDto> recommendRoutes;
 
-    public Callback getCallback() {
-        return callback;
+    public MainActivityCallbacks getCallbacks() {
+        return callbacks;
     }
 
-    public void setCallback(Callback callback) {
-        this.callback = callback;
+    public void setCallbacks(MainActivityCallbacks callback) {
+        this.callbacks = callback;
     }
 
-    Callback callback;
+    MainActivityCallbacks callbacks;
 
     private static final int NUMBER_TAB = 2;
     private static final int[] tabIcons = {R.drawable.ic_tab_icon_route, R.drawable.ic_tab_icon_direction};
@@ -141,12 +142,10 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
 
     @Override
     public void changeInstruction(int position) {
-        callback.drawRoute(getRecommendRoutes().get(position).getInstruction());
+        callbacks.drawRouteCB(getRecommendRoutes().get(position).getInstruction());
         instructionFragment.changeInstruction(getRecommendRoutes().get(position).getInstruction());
         viewPager.setCurrentItem(1);
     }
 
-    public interface Callback {
-        void drawRoute(List<Object> instruction);
-    }
+
 }
