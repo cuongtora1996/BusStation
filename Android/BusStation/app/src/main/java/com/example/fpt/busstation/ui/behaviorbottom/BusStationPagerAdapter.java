@@ -17,18 +17,18 @@ import java.util.List;
 public class BusStationPagerAdapter extends FragmentStatePagerAdapter {
 
     private int tabCount;
-    private StationFragment stationFragment;
-    private BusFragment busFragment;
+//    private StationFragment stationFragment;
+//    private BusFragment busFragment;
     private final List<Fragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentTitleList = new ArrayList<>();
 
-
-    public BusStationPagerAdapter(FragmentManager fm, StationFragment stationFragment, BusFragment busFragment) {
-        super(fm);
-        this.tabCount = 0;
-        this.stationFragment = stationFragment;
-        this.busFragment = busFragment;
-    }
+//
+//    public BusStationPagerAdapter(FragmentManager fm, StationFragment stationFragment, BusFragment busFragment) {
+//        super(fm);
+//        this.tabCount = 0;
+//        this.stationFragment = stationFragment;
+//        this.busFragment = busFragment;
+//    }
 
     public BusStationPagerAdapter(FragmentManager fm) {
         super(fm);

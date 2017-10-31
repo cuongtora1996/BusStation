@@ -41,164 +41,165 @@ import java.util.Random;
  */
 
 public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> implements MainMvpPresenter<T> {
-    MediaPlayer mediaPlayer ;
+    MediaPlayer mediaPlayer;
     private MediaRecorder mediaRecorder;
     private static final int PERMISSION_AUDIO = 2;
-    private static final String AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath()+"/voiceRecord.3gp";
-    public MainPresenter(){
+    private static final String AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/voiceRecord.3gp";
+
+    public MainPresenter() {
         super();
     }
 
 
     @Override
     public void sendDetectRequest(final Double lng, final Double lat, String text) {
-        Log.d("Send request","test");
+        Log.d("Send request", "test");
         IntentRequest.sendGetRequest(text, new OnResponseStringListener() {
             @Override
             public void onResponse(String data) {
                 try {
                     IntentDTO dto = IntentResponse.convertData(data);
 
-                    sendTTSRequest("Xác nhận "+dto.getMess());
-                    switch (dto.getType()){
+                    sendTTSRequest("Xác nhận " + dto.getMess());
+                    switch (dto.getType()) {
                         case 1:
-                            sendStationRequest(lng,lat,"",dto.getType());
+                            sendStationRequest(lng, lat, "", dto.getType());
                             break;
                         case 2:
-                            sendStationRequest(lng,lat,"",dto.getType());
+                            sendStationRequest(lng, lat, "", dto.getType());
                             break;
                         case 3:
-                            sendStationRequest(lng,lat,dto.getBusnum(),dto.getType());
+                            sendStationRequest(lng, lat, dto.getBusnum(), dto.getType());
                             break;
                         case 4:
-                            sendStationRequest(lng,lat,dto.getBusnum(),dto.getType());
+                            sendStationRequest(lng, lat, dto.getBusnum(), dto.getType());
                             break;
                         case 5:
-                            sendRouteRequest(lng,lat,dto.getBegin(),dto.getEnd(),dto.getType());
+                            sendRouteRequest(lng, lat, dto.getBegin(), dto.getEnd(), dto.getType());
                             break;
                         case 6:
-                            sendRouteRequest(lng,lat,"",dto.getEnd(),dto.getType());
+                            sendRouteRequest(lng, lat, "", dto.getEnd(), dto.getType());
                             break;
                         case 7:
                             break;
                     }
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onError(VolleyError error) {
-                Log.d("error",error.toString());
+                Log.d("error", error.toString());
             }
         });
     }
 
     @Override
-    public void sendRouteRequest(Double lng, Double lat,String begin, String end,int type) {
+    public void sendRouteRequest(Double lng, Double lat, String begin, String end, int type) {
 
-        RouteRequest.sendGetRequest(lng,lat,begin, end, type,new OnResponseStringListener() {
+        RouteRequest.sendGetRequest(lng, lat, begin, end, type, new OnResponseStringListener() {
             @Override
             public void onResponse(String data) {
                 List<RecommendRoutesDto> result = RouteResponse.convertData(data);
+                Log.d("===convertData", "size: " + result.size());
                 getMvpView().removeAllMarkerAndPolyline();
                 getMvpView().showRouteInstruction(result);
             }
 
             @Override
             public void onError(VolleyError error) {
-                Log.d("error",error.toString());
+                Log.d("error", error.toString());
             }
         });
     }
 
     @Override
-    public void sendStationRequest(Double lng, Double lat,String number,int type) {
+    public void sendStationRequest(Double lng, Double lat, String number, int type) {
 
-        StationRequest.sendGetRequest(lng,lat,number,type,new OnResponseStringListener() {
+        StationRequest.sendGetRequest(lng, lat, number, type, new OnResponseStringListener() {
             @Override
             public void onResponse(String data) {
                 List<StationDto> result = StationResponse.convertData(data);
                 getMvpView().removeAllMarkerAndPolyline();
-                for(int i = 0 ;i<result.size();i++){
+                for (int i = 0; i < result.size(); i++) {
                     StationDto dto = result.get(i);
-                    getMvpView().placeStation(dto.getLng(),dto.getLat(),dto.getStationAddress(),dto.getStationName(),i);
+                    getMvpView().placeStation(dto.getLng(), dto.getLat(), dto.getStationAddress(), dto.getStationName(), i);
                 }
                 getMvpView().showBusAndStation(result);
             }
 
             @Override
             public void onError(VolleyError error) {
-                Log.d("error",error.toString());
+                Log.d("error", error.toString());
             }
         });
     }
 
     @Override
-    public void sendTTSRequest(String text){
-            Log.d("String text",text);
-            RestClient.getInstance().postAudioRequest("http://api.openfpt.vn/text2speech/v4", text, new OnResponseStringListener() {
-                @Override
-                public void onResponse(String data) {
-                    try{
-                        JSONObject jsonObject = new JSONObject(data);
-                        int success = jsonObject.getInt("error");
-                        if(success==0){
-                            String url = jsonObject.getString("async");
-                            try {
-                                MediaPlayer player = new MediaPlayer();
-                                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                                player.setDataSource(url);
-                                player.prepare();
-                                player.start();
-                            }
-                            catch (Exception e){
+    public void sendTTSRequest(String text) {
+        Log.d("String text", text);
+        RestClient.getInstance().postAudioRequest("http://api.openfpt.vn/text2speech/v4", text, new OnResponseStringListener() {
+            @Override
+            public void onResponse(String data) {
+                try {
+                    JSONObject jsonObject = new JSONObject(data);
+                    int success = jsonObject.getInt("error");
+                    if (success == 0) {
+                        String url = jsonObject.getString("async");
+                        try {
+                            MediaPlayer player = new MediaPlayer();
+                            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                            player.setDataSource(url);
+                            player.prepare();
+                            player.start();
+                        } catch (Exception e) {
 
-                            }
                         }
                     }
-                    catch (JSONException e){
-                        e.printStackTrace();
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+            }
 
-                @Override
-                public void onError(VolleyError error) {
+            @Override
+            public void onError(VolleyError error) {
 
-                }
-            });
+            }
+        });
 
     }
+
     @Override
     public void startRecordAudio() {
-        if(checkPermissionAudio()){
+        if (checkPermissionAudio()) {
             mediaRecorderReady();
-            try{
+            try {
                 mediaRecorder.prepare();
                 mediaRecorder.start();
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else{
-            getMvpView().requestPermissionsSafely(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO},PERMISSION_AUDIO);
+        } else {
+            getMvpView().requestPermissionsSafely(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, PERMISSION_AUDIO);
         }
     }
-    public void mediaRecorderReady(){
-        mediaRecorder=new MediaRecorder();
+
+    public void mediaRecorderReady() {
+        mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
-    public boolean checkPermissionAudio(){
-        return getMvpView().hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)&&getMvpView().hasPermission(Manifest.permission.RECORD_AUDIO);
+
+    public boolean checkPermissionAudio() {
+        return getMvpView().hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) && getMvpView().hasPermission(Manifest.permission.RECORD_AUDIO);
     }
+
     @Override
     public void stopRecordAudio() {
-        if(!checkPermissionAudio()) return;
+        if (!checkPermissionAudio()) return;
         getMvpView().showLoading();
         mediaRecorder.stop();
         mediaPlayer = new MediaPlayer();

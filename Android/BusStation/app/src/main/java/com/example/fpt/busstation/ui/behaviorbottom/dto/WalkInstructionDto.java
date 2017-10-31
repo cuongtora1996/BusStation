@@ -6,14 +6,14 @@ package com.example.fpt.busstation.ui.behaviorbottom.dto;
 
 public class WalkInstructionDto {
     private int type;
-    private int beginType;
-    private int endType;
+    private int beginType; /**1 when standing current pos, 2 when standing at a station */
+    private int endType; /**2 when need to go a station, 2 when need walk to finish point*/
     private CoordDto beginCoord;
     private CoordDto endCoord;
     private double duration;
     private double distance;
-    private int fromBus; //TH doi tuyen
-    private int toBus; //TH doi tuyen
+    private int fromBus; /** used in show instruction if user walk to current pos to first station*/
+    private int toBus;/** used in show instruction if user need to leave from current bus to take another bus at same station*/
 
 
     public WalkInstructionDto(int type, int beginType, int endType, CoordDto beginCoord, CoordDto endCoord, double duration, double distance) {

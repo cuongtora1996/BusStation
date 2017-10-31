@@ -4,10 +4,14 @@ package com.example.fpt.busstation.ui.behaviorbottom.dto;
  * Created by Vi Nguyen on 22/10/2017.
  */
 
+/**
+ * CoordDto
+ * used for access and display instruction which type = 1
+ */
 public class CoordDto {
     private double Lat;
     private double Lng;
-    private String name;
+    private String name; /**current pos || station name || finish position*/
 
     public CoordDto(double lat, double lng, String name) {
         Lat = lat;

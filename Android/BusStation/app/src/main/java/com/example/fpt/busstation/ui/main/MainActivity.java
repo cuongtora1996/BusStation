@@ -29,6 +29,8 @@ import com.example.fpt.busstation.ui.base.BaseActivity;
 import com.example.fpt.busstation.ui.behaviorbottom.BusStationViewPagerFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.BusRouteInstructionDto;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.CoordDto;
+import com.example.fpt.busstation.ui.behaviorbottom.dto.PointDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.RouteDto;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
@@ -270,7 +272,9 @@ public class MainActivity extends BaseActivity implements
                         targetPoint = new Point(markerPoint.x, (int) (markerPoint.y + (findViewById(R.id.map).getHeight() * 0.2)));
                         targetPosition = mLastProjectionMarker.fromScreenLocation(targetPoint);
                         moveMapCamera(targetPosition);
-                        routeFragment.changeInstruction(position);
+//                        routeFragment.changeInstruction(position);
+                        //FIXME Vi
+
                         showBottomSheet();
                         break;
 
@@ -638,8 +642,12 @@ public class MainActivity extends BaseActivity implements
                 polylineOptions.jointType(JointType.ROUND);
                 polylineOptions.endCap(new RoundCap());
                 polylineOptions.startCap(new RoundCap());
-                for (RouteDto routeDto : dto.getRouteDto()) {
-                    polylineOptions.add(new LatLng(routeDto.getLat(), routeDto.getLng()));
+//                for (RouteDto routeDto : dto.getRouteDto()) {
+//                    polylineOptions.add(new LatLng(routeDto.getLat(), routeDto.getLng()));
+//                }
+                //FIXME Vi
+                for (PointDto pointDto : dto.getPath()) {
+                    polylineOptions.add(new LatLng(pointDto.getLat(), pointDto.getLng()));
                 }
                 listPolyline.add(mMap.addPolyline(polylineOptions));
 
