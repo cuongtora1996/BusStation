@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.fpt.busstation.R;
+import com.example.fpt.busstation.service.MainActivityCallbacks;
 import com.example.fpt.busstation.ui.base.BaseFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
 import com.example.fpt.busstation.ui.behaviorbottom.fragments.BusFragment;
@@ -27,6 +28,8 @@ public class BusStationViewPagerFragment extends BaseFragment implements Station
     BusFragment busFragment;
     StationFragment stationFragment;
     List<StationDto> stationDtoList;
+    MainActivityCallbacks callbacks;
+
     private static final int NUMBER_TAB = 2;
     private static final int[] tabIcons = {R.drawable.ic_tab_icon_station, R.drawable.ic_tab_icon_bus};
 
@@ -39,6 +42,14 @@ public class BusStationViewPagerFragment extends BaseFragment implements Station
 
     public List<StationDto> getStationDtoList() {
         return stationDtoList;
+    }
+
+    public MainActivityCallbacks getCallbacks() {
+        return callbacks;
+    }
+
+    public void setCallbacks(MainActivityCallbacks callbacks) {
+        this.callbacks = callbacks;
     }
 
     @Override
@@ -118,5 +129,6 @@ public class BusStationViewPagerFragment extends BaseFragment implements Station
     public void changeListBusCross(int position) {
         busFragment.changeBusCross(getStationDtoList().get(position).getListBus());
         viewPager.setCurrentItem(1);
+        callbacks.moveToMarkerAndShowInfo(position);
     }
 }

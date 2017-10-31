@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.service.AnchorSheetBehavior;
+import com.example.fpt.busstation.service.MainActivityCallbacks;
 import com.example.fpt.busstation.ui.base.BaseActivity;
 import com.example.fpt.busstation.ui.behaviorbottom.BusStationViewPagerFragment;
 import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
@@ -73,7 +74,7 @@ public class MainActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        RouteInstructionViewPagerFragment.Callback {
+        MainActivityCallbacks {
 
 
     private AnchorSheetBehavior mBottomSheetBehavior;
@@ -202,7 +203,7 @@ public class MainActivity extends BaseActivity implements
     public void onMapReady(GoogleMap googleMap) {
         Log.d("OnMapReady", "Fire");
         mMap = googleMap;
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.style_map_json));
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_map_json));
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -292,9 +293,10 @@ public class MainActivity extends BaseActivity implements
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
                 moveMapCameraMarker(marker.getPosition());
-
+                if (mBottomSheetBehavior.getState() == AnchorSheetBehavior.STATE_ANCHOR) {
+                    hideBottomSheet();
+                }
                 return false;
             }
         });
@@ -526,28 +528,29 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-        if(mBottomSheetBehavior.getState() != AnchorSheetBehavior.STATE_HIDDEN && mBottomSheetBehavior.getState() != AnchorSheetBehavior.STATE_COLLAPSED){
+        if (mBottomSheetBehavior.getState() != AnchorSheetBehavior.STATE_HIDDEN && mBottomSheetBehavior.getState() != AnchorSheetBehavior.STATE_COLLAPSED) {
             hideBottomSheet();
-        }else{
+        } else {
             moveTaskToBack(true);
         }
     }
-   /* @Override
-    public boolean dispatchTouchEvent(MotionEvent event){
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (mBottomSheetBehavior.getState()==AnchorSheetBehavior.STATE_ANCHOR) {
 
-                Rect outRect = new Rect();
-                findViewById(R.id.bottom_sheet).getGlobalVisibleRect(outRect);
+    /* @Override
+     public boolean dispatchTouchEvent(MotionEvent event){
+         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+             if (mBottomSheetBehavior.getState()==AnchorSheetBehavior.STATE_ANCHOR) {
 
-                if(!outRect.contains((int)event.getRawX(), (int)event.getRawY()))
-                    mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
-                    moveMapCamera(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
-            }
-        }
+                 Rect outRect = new Rect();
+                 findViewById(R.id.bottom_sheet).getGlobalVisibleRect(outRect);
 
-        return super.dispatchTouchEvent(event);
-    }*/
+                 if(!outRect.contains((int)event.getRawX(), (int)event.getRawY()))
+                     mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
+                     moveMapCamera(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
+             }
+         }
+
+         return super.dispatchTouchEvent(event);
+     }*/
     @Override
     public void placeStation(double lng, double lat, String address, String name, int position) {
         LatLng latLng = new LatLng(lat, lng);
@@ -583,19 +586,21 @@ public class MainActivity extends BaseActivity implements
     public void showBusAndStation(List<StationDto> list) {
 
         stationFragment = new BusStationViewPagerFragment(list);
+        stationFragment.setCallbacks(this);
         getSupportFragmentManager()
                 .beginTransaction()
                 .disallowAddToBackStack()
                 .replace(R.id.bottom_sheet, stationFragment)
                 .commit();
         showBottomSheet();
-        moveMapCameraTopMarker(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
+        moveMapCameraTopMarker(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+        mCurrLocationMarker.showInfoWindow();
     }
 
     @Override
     public void showRouteInstruction(List<RecommendRoutesDto> list) {
         routeFragment = new RouteInstructionViewPagerFragment(list);
-        routeFragment.setCallback(this);
+        routeFragment.setCallbacks(this);
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(null)
@@ -641,7 +646,7 @@ public class MainActivity extends BaseActivity implements
         findViewById(R.id.map).post(new Runnable() {
             @Override
             public void run() {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,16), new GoogleMap.CancelableCallback() {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16), new GoogleMap.CancelableCallback() {
                     @Override
                     public void onFinish() {
                         mLastProjectionMarker = mMap.getProjection();
@@ -659,7 +664,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void drawRoute(List<Object> instruction) {
+    public void drawRouteCB(List<Object> instruction) {
 
         removeAllMarkerAndPolyline();
         for (int i = 0; i < instruction.size(); i++) {
@@ -723,6 +728,16 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    @Override
+    public void moveToMarkerAndShowInfo(int position) {
+
+
+        listMarker.get(position).showInfoWindow();
+
+        moveMapCameraTopMarker(listMarker.get(position).getPosition());
+
+    }
+
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
@@ -738,8 +753,12 @@ public class MainActivity extends BaseActivity implements
         for (Marker m : listMarker) {
             m.remove();
         }
+        listMarker = new ArrayList<>();
         for (Polyline p : listPolyline) {
             p.remove();
         }
+        listPolyline = new ArrayList<>();
     }
+
+
 }
