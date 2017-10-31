@@ -2,8 +2,12 @@ package com.example.fpt.busstation.ui.behaviorbottom;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.fpt.busstation.R;
@@ -79,11 +83,13 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
         tabLayout.setupWithViewPager(viewPager);
         setupTabAttribute(viewPager, tabLayout);
 
+
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
         viewPager.setPagingEnabled(false);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         BottomSheetUtils.setupViewPager(viewPager, getBaseActivity().findViewById(R.id.bottom_sheet));
+
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -94,7 +100,7 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
         viewPager.setAdapter(adapter);
     }
 
-    private void setupTabAttribute(final ViewPager viewPager, TabLayout tabLayout) {
+    private void setupTabAttribute(final ViewPager viewPager, final TabLayout tabLayout) {
         for (int i = 0; i < NUMBER_TAB; i++) {
             TextView tab = (TextView) LayoutInflater.from(this.getContext()).inflate(R.layout.custom_tab, null);
 
@@ -102,10 +108,14 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
             tab.setCompoundDrawablesWithIntrinsicBounds(0, tabIcons[i], 0, 0);
             tabLayout.getTabAt(i).setCustomView(tab);
         }
+
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+
+                    viewPager.setCurrentItem(tab.getPosition());
+
             }
 
             @Override
@@ -116,6 +126,15 @@ public class RouteInstructionViewPagerFragment extends BaseFragment implements R
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
+            }
+        });
+        LinearLayout tabStrip = ((LinearLayout) tabLayout.getChildAt(0));
+
+
+        tabStrip.getChildAt(1).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
             }
         });
     }
