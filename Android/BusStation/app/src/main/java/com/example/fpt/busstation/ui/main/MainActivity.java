@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.speech.RecognizerIntent;
@@ -19,6 +20,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,6 +55,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -197,7 +200,8 @@ public class MainActivity extends BaseActivity implements
     public void onMapReady(GoogleMap googleMap) {
         Log.d("OnMapReady", "Fire");
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.style_map_json));
+
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             Log.d("===========>Prepare", "BuildGoogleApiClient");
@@ -221,6 +225,7 @@ public class MainActivity extends BaseActivity implements
                 int type = Integer.parseInt(stringsplit[0]);
                 String titleString = stringsplit[2];
                 switch (type) {
+
                     case 1:
                         myContentView = getLayoutInflater().inflate(R.layout.custom_marker_station, null);
                         TextView title = (TextView) myContentView.findViewById(R.id.title);
@@ -249,12 +254,14 @@ public class MainActivity extends BaseActivity implements
             public void onInfoWindowClick(final Marker marker) {
 
                 String[] stringsplit = marker.getTitle().split(",");
+                if (stringsplit.length == 1) return;
                 int type = Integer.parseInt(stringsplit[0]);
                 int position = Integer.parseInt(stringsplit[1]);
                 LatLng markerPosition, targetPosition;
                 Point markerPoint, targetPoint;
 
                 switch (type) {
+
                     case 1:
                         markerPosition = marker.getPosition();
                         markerPoint = mLastProjectionMarker.toScreenLocation(markerPosition);
@@ -514,7 +521,30 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
+    public void onBackPressed() {
+        if(mBottomSheetBehavior.getState() != AnchorSheetBehavior.STATE_HIDDEN && mBottomSheetBehavior.getState() != AnchorSheetBehavior.STATE_COLLAPSED){
+            hideBottomSheet();
+        }else{
+            moveTaskToBack(true);
+        }
+    }
+   /* @Override
+    public boolean dispatchTouchEvent(MotionEvent event){
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (mBottomSheetBehavior.getState()==AnchorSheetBehavior.STATE_ANCHOR) {
 
+                Rect outRect = new Rect();
+                findViewById(R.id.bottom_sheet).getGlobalVisibleRect(outRect);
+
+                if(!outRect.contains((int)event.getRawX(), (int)event.getRawY()))
+                    mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_COLLAPSED);
+                    moveMapCamera(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
+            }
+        }
+
+        return super.dispatchTouchEvent(event);
+    }*/
+    @Override
     public void placeStation(double lng, double lat, String address, String name, int position) {
         LatLng latLng = new LatLng(lat, lng);
         MarkerOptions markerOptions = new MarkerOptions();
@@ -547,6 +577,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void showBusAndStation(List<StationDto> list) {
+
         stationFragment = new BusStationViewPagerFragment(list);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -554,6 +585,7 @@ public class MainActivity extends BaseActivity implements
                 .replace(R.id.bottom_sheet, stationFragment)
                 .commit();
         showBottomSheet();
+        moveMapCameraTopMarker(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()));
     }
 
     @Override
@@ -605,8 +637,7 @@ public class MainActivity extends BaseActivity implements
         findViewById(R.id.map).post(new Runnable() {
             @Override
             public void run() {
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(16), new GoogleMap.CancelableCallback() {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,16), new GoogleMap.CancelableCallback() {
                     @Override
                     public void onFinish() {
                         mLastProjectionMarker = mMap.getProjection();

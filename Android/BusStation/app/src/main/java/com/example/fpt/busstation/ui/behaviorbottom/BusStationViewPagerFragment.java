@@ -3,7 +3,9 @@ package com.example.fpt.busstation.ui.behaviorbottom;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.fpt.busstation.R;
@@ -100,6 +102,16 @@ public class BusStationViewPagerFragment extends BaseFragment implements Station
 
             }
         });
+        LinearLayout tabStrip = ((LinearLayout) tabLayout.getChildAt(0));
+
+
+        tabStrip.getChildAt(1).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
     }
 
     @Override
