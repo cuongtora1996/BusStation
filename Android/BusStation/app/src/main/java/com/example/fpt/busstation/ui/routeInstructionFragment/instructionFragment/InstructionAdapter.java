@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fpt.busstation.R;
+import com.example.fpt.busstation.data.db.BusTransferInstructionDto;
 import com.example.fpt.busstation.ui.base.BaseRcvAdapter;
 import com.example.fpt.busstation.data.db.BusRouteInstructionDto;
 import com.example.fpt.busstation.data.db.WalkInstructionDto;
@@ -46,7 +47,6 @@ public class InstructionAdapter extends BaseRcvAdapter {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_ins_walk_begin, parent, false);
                 viewHolder = new InsWalkBeginViewHolder(view);
                 break;
-
             case 1:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_ins_walk_end, parent, false);
                 viewHolder = new InsWalkEndViewHolder(view);
@@ -112,11 +112,12 @@ public class InstructionAdapter extends BaseRcvAdapter {
     public int getItemViewType(int position) {
         if (lstDto.get(position) instanceof BusRouteInstructionDto) {
             return TYPE_BUS;
-        } else if (lstDto.get(position) instanceof WalkInstructionDto) {
+        }
+        else if(lstDto.get(position) instanceof BusTransferInstructionDto){
+            return TYPE_WALK_BETWEEN;
+        }else if (lstDto.get(position) instanceof WalkInstructionDto) {
             WalkInstructionDto dto = (WalkInstructionDto) lstDto.get(position);
-            if (dto.getType() == 3) {
-                return TYPE_WALK_BETWEEN;
-            } else if (dto.getType() == 4) {
+            if (dto.getType() == 4) {
                 return TYPE_WALK_BETWEEN_2STATION;
             } else if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
                 return TYPE_WALK_BEGIN;
