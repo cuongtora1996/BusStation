@@ -65,17 +65,14 @@ public class RecommendRoutesAdapter extends BaseRcvAdapter {
             case 0:
                 break;
             case 1:
-                Log.d("Bind View Holder", "Position of item: " + position);
                 RecommendRoutes1BusViewHolder viewHolder1Bus = (RecommendRoutes1BusViewHolder) holder;
                 viewHolder1Bus.bindItem(mListener, listRecommend.get(position), position);
                 break;
             case 2:
-                Log.d("Bind View Holder", "Position of item: " + position);
                 RecommendRoutes2BusViewHolder viewHolder2Bus = (RecommendRoutes2BusViewHolder) holder;
                 viewHolder2Bus.bindItem(mListener, listRecommend.get(position), position);
                 break;
             case 3:
-                Log.d("Bind View Holder", "Position of item: " + position);
                 RecommendRoutes3BusViewHolder viewHolder3Bus = (RecommendRoutes3BusViewHolder) holder;
                 viewHolder3Bus.bindItem(mListener, listRecommend.get(position), position);
                 break;
@@ -86,14 +83,11 @@ public class RecommendRoutesAdapter extends BaseRcvAdapter {
     @Override
     public int getItemViewType(int position) {
         if(listRecommend.get(position).getTotalBus()==1){
-            Log.d("getItemViewType", "Position of item: " + position);
             return 1;
         }
         else if (listRecommend.get(position).getTotalBus() == 2) {
-            Log.d("getItemViewType", "Position of item: " + position);
             return 2;
         } else if (listRecommend.get(position).getTotalBus() == 3) {
-            Log.d("getItemViewType", "Position of item: " + position);
             return 3;
         }
         return -1;

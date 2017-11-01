@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.fpt.busstation.R;
+import com.example.fpt.busstation.data.db.BusTransferInstructionDto;
 import com.example.fpt.busstation.service.AnchorSheetBehavior;
 import com.example.fpt.busstation.service.MainActivityCallbacks;
 import com.example.fpt.busstation.ui.base.BaseActivity;
@@ -218,7 +219,6 @@ public class MainActivity extends BaseActivity implements
                 String[] stringsplit = marker.getTitle().split(",");
                 if (stringsplit.length == 1) return null;
                 View myContentView = null;
-
                 int type = Integer.parseInt(stringsplit[0]);
                 String titleString = stringsplit[2];
                 switch (type) {
@@ -270,6 +270,7 @@ public class MainActivity extends BaseActivity implements
                         targetPoint = new Point(markerPoint.x, (int) (markerPoint.y + (findViewById(R.id.map).getHeight() * 0.2)));
                         targetPosition = mLastProjectionMarker.fromScreenLocation(targetPoint);
                         moveMapCamera(targetPosition);
+                        routeFragment.changeToInstructionTab();
                         showBottomSheet();
                         break;
                 }
@@ -648,13 +649,12 @@ public class MainActivity extends BaseActivity implements
                 BusRouteInstructionDto dto = (BusRouteInstructionDto) instruction.get(i);
                 PolylineOptions polylineOptions = new PolylineOptions();
                 polylineOptions.color(Color.parseColor(dto.getColor()));
-                // polylineOptions.geodesic(true);
-                polylineOptions.width(5);
+                polylineOptions.width(10);
                 polylineOptions.clickable(true);
                 polylineOptions.jointType(JointType.ROUND);
                 polylineOptions.endCap(new RoundCap());
                 polylineOptions.startCap(new RoundCap());
-                for (int j = 0; j < dto.getStations().size(); j++) {
+                for (int j = 1; j < dto.getStations().size() - 1; j++) {
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title("4," + j + "," + dto.getStations().get(j).getName())
                             .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_marker_station))
@@ -666,16 +666,18 @@ public class MainActivity extends BaseActivity implements
                     polylineOptions.add(new LatLng(pointDto.getLat(), pointDto.getLng()));
                 }
                 listPolyline.add(mMap.addPolyline(polylineOptions));
+            } else if (instruction.get(i) instanceof BusTransferInstructionDto) {
+                BusTransferInstructionDto transferDto = (BusTransferInstructionDto) instruction.get(i);
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .title("2," + i + "," + "Trạm " + transferDto.getChangeCoord().getName())
+                        .snippet("Chuyển sang tuyến số " + transferDto.getToBus())
+                        .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_marker_station))
+                        .position(new LatLng(transferDto.getChangeCoord().getLat(), transferDto.getChangeCoord().getLng()));
+                listMarker.add(mMap.addMarker(markerOptions));
+
             } else {
                 WalkInstructionDto dto = (WalkInstructionDto) instruction.get(i);
-                if (dto.getType() == 3) {
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .title("2," + i + "," + dto.getBeginCoord().getName())
-                            .snippet("Chuyển sang tuyến số " + dto.getToBus())
-                            .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_marker_station))
-                            .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
-                    listMarker.add(mMap.addMarker(markerOptions));
-                } else if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
+                if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title("2," + i + ", Vị trí đang đứng")
                             .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_marker_current_pos))
@@ -707,8 +709,10 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+
     @Override
     public void moveToMarkerAndShowInfo(int position) {
+
         listMarker.get(position).showInfoWindow();
         moveMapCameraTopMarker(listMarker.get(position).getPosition());
     }

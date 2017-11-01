@@ -35,9 +35,10 @@ public class RecommendRoutes2BusViewHolder extends BaseRcvViewHolder {
     public void bindItem(final BaseRcvAdapter.OnItemListener listener, final Object item, final int position) {
         RecommendRoutesDto dto = (RecommendRoutesDto) item;
         tvRouteName.setText(((RecommendRoutesDto) item).generateRouteName());
+        Log.d("??? Route Name: ", ((RecommendRoutesDto) item).generateRouteName());
         String txtDuration = LayoutUtils.handleDisplayTime(dto.getDuration());
         tvDuration.setText(txtDuration);
-        String[] busNumber = ((RecommendRoutesDto) item).getListBusNo().split(", ");
+        String[] busNumber = ((RecommendRoutesDto) item).getListBusNo().split(",");
         if (busNumber.length == 2) {
             tvNoOfBus1.setText(busNumber[0]);
             tvNoOfBus2.setText(busNumber[1]);

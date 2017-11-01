@@ -24,7 +24,7 @@ public class RecommendRoutes1BusViewHolder extends BaseRcvViewHolder {
 
     public RecommendRoutes1BusViewHolder(View itemView) {
         super(itemView);
-        cardView = (CardView) itemView.findViewById(R.id.cvRoute2Bus);
+        cardView = (CardView) itemView.findViewById(R.id.cvRoute1Bus);
         tvDuration = (TextView) itemView.findViewById(R.id.tvDuration);
         tvRouteName = (TextView) itemView.findViewById(R.id.tvRouteName);
         tvNoOfBus1 = (TextView) itemView.findViewById(R.id.tvNoOfBus1);
@@ -37,7 +37,7 @@ public class RecommendRoutes1BusViewHolder extends BaseRcvViewHolder {
         tvRouteName.setText(((RecommendRoutesDto) item).generateRouteName());
         String txtDuration = LayoutUtils.handleDisplayTime(dto.getDuration());
         tvDuration.setText(txtDuration);
-        String[] busNumber = ((RecommendRoutesDto) item).getListBusNo().split(", ");
+        String[] busNumber = ((RecommendRoutesDto) item).getListBusNo().split(",");
         if (busNumber.length == 1) {
             tvNoOfBus1.setText(busNumber[0]);
 

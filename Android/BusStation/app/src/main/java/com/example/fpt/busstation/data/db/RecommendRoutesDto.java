@@ -1,5 +1,7 @@
 package com.example.fpt.busstation.data.db;
 
+import android.util.Log;
+
 import java.util.List;
 
 /**
@@ -37,7 +39,7 @@ public class RecommendRoutesDto {
     public String generateRouteName() {
         String generatedName = "";
         StringBuilder sb = new StringBuilder();
-        String[] busNumArr = listBusNo.split(", ");
+        String[] busNumArr = listBusNo.split(",");
         if (!listBusNo.equals("")) {
             sb.append("Tuyến đường ");
             for (String number : busNumArr) {
@@ -46,6 +48,7 @@ public class RecommendRoutesDto {
             }
            generatedName = sb.substring(0, sb.length() - 1);
         }
+        Log.d("??? generate name: ", generatedName);
         return generatedName;
     }
 

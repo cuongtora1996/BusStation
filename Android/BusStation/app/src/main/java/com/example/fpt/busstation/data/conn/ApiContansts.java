@@ -17,6 +17,8 @@ public class ApiContansts {
     public final static String KEY_ENDTYPE = "endType";
     public final static String KEY_BEGINCOORD = "beginCoord";
     public final static String KEY_ENDCOORD = "endCoord";
+    public final static String KEY_CHANGECOORD = "changeCoord";
+
     public final static String KEY_LAT = "Lat";
     public final static String KEY_LNG = "Lng";
     public final static String KEY_NAME = "name";

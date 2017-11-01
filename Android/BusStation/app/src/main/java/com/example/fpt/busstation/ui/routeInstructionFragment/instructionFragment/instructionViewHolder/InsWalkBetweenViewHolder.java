@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.fpt.busstation.R;
+import com.example.fpt.busstation.data.db.BusTransferInstructionDto;
 import com.example.fpt.busstation.ui.base.BaseRcvAdapter;
 import com.example.fpt.busstation.ui.base.BaseRcvViewHolder;
 import com.example.fpt.busstation.data.db.WalkInstructionDto;
@@ -33,21 +34,14 @@ public class InsWalkBetweenViewHolder extends BaseRcvViewHolder {
 
     @Override
     public void bindItem(final BaseRcvAdapter.OnItemListener listener, final Object item, final int position) {
-        WalkInstructionDto walkIns = (WalkInstructionDto) item;
-        tvTitle.setText("Chuyển từ tuyến " + walkIns.getFromBus() + " sang tuyến " + walkIns.getToBus());
-        tvBusNum.setText("Đón tuyến số " + walkIns.getToBus());
-        String mess = "Xuống xe tại trạm " + walkIns.getBeginCoord().getName();
-
+        BusTransferInstructionDto transferDto = (BusTransferInstructionDto) item;
+        tvTitle.setText("Chuyển từ tuyến " + transferDto.getFromBus() + " sang tuyến " + transferDto.getToBus());
+        tvBusNum.setText("Đón tuyến số " + transferDto.getToBus());
+        String mess = "Xuống xe tại trạm " + transferDto.getChangeCoord().getName();
         int lines = LayoutUtils.setLinesForTextView(mess, TXT_LENGTH_LIMIT, tvOffStation);
-        tvOffStation.setLines(lines);
-        tvOffStation.setMaxLines(lines);
-        Log.d(">>>>>>>>>>>>>Line", "line: " + tvOffStation.getLineCount());
-        Log.d(">>>>>>>>>>>>>Line", "maxLine: " + tvOffStation.getMaxLines());
-        Log.d(">>>>>>>>>>>>>Line", "height: " + tvOffStation.getHeight());
-
+//        tvOffStation.setLines(lines);
+//        tvOffStation.setMaxLines(lines);
         tvOffStation.setText(mess);
-
-
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
