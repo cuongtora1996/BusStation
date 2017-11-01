@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseMvpV
     protected abstract void onInit();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+        public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentViewResource());
 

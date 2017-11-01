@@ -1,5 +1,7 @@
 package com.example.fpt.busstation.data.conn.response;
 
+import android.util.Log;
+
 import com.example.fpt.busstation.data.conn.ApiContansts;
 import com.example.fpt.busstation.data.db.BusDto;
 import com.example.fpt.busstation.data.db.StationDto;
@@ -21,8 +23,9 @@ public class StationResponse {
     private static List<StationDto> stationDtoList;
 
     public static List<StationDto> convertData(String datas) {
-        if(datas!=null){
-            stationDtoList = new ArrayList<>();
+        stationDtoList = new ArrayList<>();
+        if(!datas.equals("[]")){
+
             JSONArray jsonArrayStation = null;
             try{
                 jsonArrayStation = new JSONArray(datas);
@@ -58,6 +61,7 @@ public class StationResponse {
                 e.printStackTrace();
             }
         }
+
         return stationDtoList;
     }
 }

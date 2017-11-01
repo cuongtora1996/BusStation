@@ -16,7 +16,7 @@ public interface MainMvpView extends BaseMvpView {
     void showBottomSheet();
     void hideBottomSheet();
     void showBusAndStation(List<StationDto> list);
-    void showRouteInstruction(List<RecommendRoutesDto> list);
+    void showRouteInstruction(List<RecommendRoutesDto> list,boolean flag);
     void removeAllMarkerAndPolyline();
     void drawWalkingRoute(List<LatLng> list);
 }

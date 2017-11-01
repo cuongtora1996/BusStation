@@ -27,9 +27,9 @@ public class RouteResponse {
     private static List<RecommendRoutesDto> recommendRoutesDtoList;
 
     public static List<RecommendRoutesDto> convertData(String data) {
-        Log.d("===convertData", "data: " + data.length());
-        if (data != null) {
-            recommendRoutesDtoList = new ArrayList<>();
+        recommendRoutesDtoList = new ArrayList<>();
+        if (!data.equals("[]")) {
+
 
             JSONArray recommendRoutes = null;
             try {
