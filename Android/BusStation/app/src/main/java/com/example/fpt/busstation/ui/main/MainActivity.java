@@ -714,7 +714,8 @@ public class MainActivity extends BaseActivity implements
 
 
                 if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
-
+                    LatLng from = new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng());
+                    LatLng to = new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng());
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title("2," + i + ", Vị trí đang đứng")
                             .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_marker_current_pos))

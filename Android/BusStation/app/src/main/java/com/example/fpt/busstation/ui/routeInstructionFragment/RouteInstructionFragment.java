@@ -143,6 +143,7 @@ public class RouteInstructionFragment extends BaseFragment implements RecommendR
         callbacks.drawRouteCB(getRecommendRoutes().get(position).getInstruction());
         instructionFragment.changeInstruction(getRecommendRoutes().get(position).getInstruction());
         viewPager.setCurrentItem(1);
+        callbacks.showBottomSheetCB();
     }
 
 
