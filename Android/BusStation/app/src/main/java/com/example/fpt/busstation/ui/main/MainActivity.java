@@ -52,16 +52,20 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Dash;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -94,7 +98,7 @@ public class MainActivity extends BaseActivity implements
     private StationBusFragment stationFragment;
     private RouteInstructionFragment routeFragment;
     private Projection mLastProjectionMarker;
-
+    private boolean flag_routeInstrution = false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("OnCreate", "Fire");
@@ -122,9 +126,9 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 if (mLastLocation != null)
-                    mPresenter.sendRouteRequest(mLastLocation.getLongitude(), mLastLocation.getLatitude(), "", "", 5);
+                   // mPresenter.sendRouteRequest(mLastLocation.getLongitude(), mLastLocation.getLatitude(), "", "", 5);
 //                    mPresenter.sendStationRequest(mLastLocation.getLongitude(), mLastLocation.getLatitude(), "", 5);
-
+                    startRecognizeSpeech();
             }
 
         });
@@ -331,6 +335,7 @@ public class MainActivity extends BaseActivity implements
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
+
     }
 
     protected void startLocationUpdate() {
@@ -410,6 +415,7 @@ public class MainActivity extends BaseActivity implements
         mLocationRequest.setInterval(20000);
         mLocationRequest.setFastestInterval(20000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
         //request user to open gps
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
         builder.setAlwaysShow(true);
@@ -469,7 +475,7 @@ public class MainActivity extends BaseActivity implements
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     // showMessage(result.get(0));
-                    mPresenter.sendTTSRequest(result.get(0));
+                    mPresenter.sendDetectRequest(mLastLocation.getLatitude(),mLastLocation.getLongitude(),result.get(0));
                 }
                 break;
         }
@@ -489,17 +495,23 @@ public class MainActivity extends BaseActivity implements
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker());
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        } else {
-            moveMapCamera(latLng);
+        if(!flag_routeInstrution) {
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title("Current Position");
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker());
+            if (mCurrLocationMarker != null) {
+                mCurrLocationMarker.remove();
+            } else {
+                moveMapCamera(latLng);
+            }
+            mCurrLocationMarker = mMap.addMarker(markerOptions);
+            mLastLocation = location;
+        }else{
+            mCurrLocationMarker.setPosition(latLng);
+
+            mLastLocation = location;
         }
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
-        mLastLocation = location;
         //move map camera
     }
 
@@ -561,6 +573,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void showBusAndStation(List<StationDto> list) {
+        flag_routeInstrution=false;
 
         stationFragment = new StationBusFragment(list);
         stationFragment.setCallbacks(this);
@@ -576,14 +589,17 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void showRouteInstruction(List<RecommendRoutesDto> list) {
+        flag_routeInstrution=true;
         routeFragment = new RouteInstructionFragment(list);
         routeFragment.setCallbacks(this);
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(null)
-                .add(R.id.bottom_sheet, routeFragment)
+                .replace(R.id.bottom_sheet, routeFragment)
                 .commit();
         showBottomSheet();
+        moveMapCameraTopMarker(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+        mCurrLocationMarker.showInfoWindow();
     }
 
     public void moveMapCamera(final LatLng latLng) {
@@ -639,17 +655,33 @@ public class MainActivity extends BaseActivity implements
         });
 
     }
-
+    @Override
+    public void showBottomSheetCB() {
+        findViewById(R.id.bottom_sheet).post(new Runnable() {
+            @Override
+            public void run() {
+                mBottomSheetBehavior.setState(AnchorSheetBehavior.STATE_ANCHOR);
+            }
+        });
+    }
+    @Override
+    public void drawWalkingRouteCB(int position) {
+        removeAllMarkerAndPolyline();
+        LatLng from = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        LatLng to =  listMarker.get(position).getPosition();
+        mPresenter.sendDirectionWalkingRequest(from,to);
+    }
     @Override
     public void drawRouteCB(List<Object> instruction) {
         removeAllMarkerAndPolyline();
+
         for (int i = 0; i < instruction.size(); i++) {
             if (instruction.get(i) instanceof BusRouteInstructionDto) {
                 BusRouteInstructionDto dto = (BusRouteInstructionDto) instruction.get(i);
                 PolylineOptions polylineOptions = new PolylineOptions();
                 polylineOptions.color(Color.parseColor(dto.getColor()));
                 // polylineOptions.geodesic(true);
-                polylineOptions.width(5);
+                polylineOptions.width(10);
                 polylineOptions.clickable(true);
                 polylineOptions.jointType(JointType.ROUND);
                 polylineOptions.endCap(new RoundCap());
@@ -660,6 +692,7 @@ public class MainActivity extends BaseActivity implements
                             .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_marker_station))
                             .position(new LatLng(dto.getStations().get(j).getLat(), dto.getStations().get(j).getLng()));
                     listMarker.add(mMap.addMarker(markerOptions));
+
                 }
                 for (int j = 0; j < dto.getPath().size(); j++) {
                     PointDto pointDto = dto.getPath().get(j);
@@ -676,18 +709,22 @@ public class MainActivity extends BaseActivity implements
                             .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
                     listMarker.add(mMap.addMarker(markerOptions));
                 } else if (dto.getBeginType() == 1 && dto.getEndType() == 2) {
+                    LatLng from = new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng());
+                    LatLng to = new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng());
                     MarkerOptions markerOptions = new MarkerOptions()
                             .title("2," + i + ", Vị trí đang đứng")
                             .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_marker_current_pos))
                             .snippet("Đi bộ đến trạm " + dto.getEndCoord().getName())
-                            .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
-                    listMarker.add(mMap.addMarker(markerOptions));
+                            .position(from);
+                    mCurrLocationMarker = mMap.addMarker(markerOptions);
+                    listMarker.add(mCurrLocationMarker);
                     moveMapCameraTopMarker(markerOptions.getPosition());
+                    mPresenter.sendDirectionWalkingRequest(from,to);
                     markerOptions = new MarkerOptions()
                             .title("2," + i + ", Trạm " + dto.getEndCoord().getName())
                             .icon(bitmapDescriptorFromVector(getBaseContext(), R.drawable.ic_marker_station))
                             .snippet("Đón tuyến số: " + dto.getToBus())
-                            .position(new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng()));
+                            .position(to);
                     listMarker.add(mMap.addMarker(markerOptions));
                 } else if (dto.getBeginType() == 2 && dto.getEndType() == 3) {
                     MarkerOptions markerOptions = new MarkerOptions()
@@ -696,6 +733,9 @@ public class MainActivity extends BaseActivity implements
                             .snippet("Xuống trạm, đi bộ đến " + dto.getEndCoord().getName())
                             .position(new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng()));
                     listMarker.add(mMap.addMarker(markerOptions));
+                    LatLng from = new LatLng(dto.getBeginCoord().getLat(), dto.getBeginCoord().getLng());
+                    LatLng to = new LatLng(dto.getEndCoord().getLat(), dto.getEndCoord().getLng());
+                    mPresenter.sendDirectionWalkingRequest(from,to);
                     markerOptions = new MarkerOptions()
                             .title("2," + i + ",Điểm cần đến")
                             .snippet(dto.getEndCoord().getName())
@@ -734,5 +774,18 @@ public class MainActivity extends BaseActivity implements
         listPolyline = new ArrayList<>();
     }
 
+    @Override
+    public void drawWalkingRoute(List<LatLng> list) {
 
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.GRAY);
+        polylineOptions.width(10);
+        List<PatternItem> pattern = Arrays.<PatternItem>asList(
+                new Dash(30), new Gap(20));
+        polylineOptions.pattern(pattern);
+        for(LatLng latLng: list){
+            polylineOptions.add(latLng);
+        }
+        listPolyline.add(mMap.addPolyline(polylineOptions));
+    }
 }

@@ -3,6 +3,7 @@ package com.example.fpt.busstation.ui.main;
 import com.example.fpt.busstation.ui.base.BaseMvpView;
 import com.example.fpt.busstation.data.db.RecommendRoutesDto;
 import com.example.fpt.busstation.data.db.StationDto;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface MainMvpView extends BaseMvpView {
     void showBusAndStation(List<StationDto> list);
     void showRouteInstruction(List<RecommendRoutesDto> list);
     void removeAllMarkerAndPolyline();
+    void drawWalkingRoute(List<LatLng> list);
 }
