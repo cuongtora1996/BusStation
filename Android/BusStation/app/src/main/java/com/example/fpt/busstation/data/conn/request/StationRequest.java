@@ -31,8 +31,8 @@ public class StationRequest {
         //"https://api.myjson.com/bins/9x65n"
 //        RestClient.getInstance().getRequest("https://api.myjson.com/bins/1d6bjb",param,listener);
         //FIXME - Vi - updated json
- 
-        RestClient.getInstance().getRequest("https://api.myjson.com/bins/lw7wj",param,listener);
+
+        RestClient.getInstance().getRequest(ApiURL.getDomain(),param,listener);
  
     }
 
