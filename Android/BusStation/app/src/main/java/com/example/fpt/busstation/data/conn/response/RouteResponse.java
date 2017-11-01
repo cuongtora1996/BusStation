@@ -3,12 +3,11 @@ package com.example.fpt.busstation.data.conn.response;
 import android.util.Log;
 
 import com.example.fpt.busstation.data.conn.ApiContansts;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.BusRouteInstructionDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.CoordDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.PointDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.RouteDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.WalkInstructionDto;
+import com.example.fpt.busstation.data.db.BusRouteInstructionDto;
+import com.example.fpt.busstation.data.db.CoordDto;
+import com.example.fpt.busstation.data.db.PointDto;
+import com.example.fpt.busstation.data.db.RecommendRoutesDto;
+import com.example.fpt.busstation.data.db.WalkInstructionDto;
 
 import org.json.JSONArray;
 import org.json.JSONException;

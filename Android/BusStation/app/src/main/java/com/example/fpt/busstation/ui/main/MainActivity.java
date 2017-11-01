@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.speech.RecognizerIntent;
@@ -20,7 +19,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,15 +27,13 @@ import com.example.fpt.busstation.R;
 import com.example.fpt.busstation.service.AnchorSheetBehavior;
 import com.example.fpt.busstation.service.MainActivityCallbacks;
 import com.example.fpt.busstation.ui.base.BaseActivity;
-import com.example.fpt.busstation.ui.behaviorbottom.BusStationViewPagerFragment;
-import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.BusRouteInstructionDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.CoordDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.PointDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.RouteDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.WalkInstructionDto;
+import com.example.fpt.busstation.ui.stationBusFragment.StationBusFragment;
+import com.example.fpt.busstation.ui.routeInstructionFragment.RouteInstructionFragment;
+import com.example.fpt.busstation.data.db.BusRouteInstructionDto;
+import com.example.fpt.busstation.data.db.PointDto;
+import com.example.fpt.busstation.data.db.RecommendRoutesDto;
+import com.example.fpt.busstation.data.db.StationDto;
+import com.example.fpt.busstation.data.db.WalkInstructionDto;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -95,8 +91,8 @@ public class MainActivity extends BaseActivity implements
     private static final String ROUTE_INS_REQ = "case3";
     private List<Marker> listMarker;
     private List<Polyline> listPolyline;
-    private BusStationViewPagerFragment stationFragment;
-    private RouteInstructionViewPagerFragment routeFragment;
+    private StationBusFragment stationFragment;
+    private RouteInstructionFragment routeFragment;
     private Projection mLastProjectionMarker;
 
     @Override
@@ -566,7 +562,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void showBusAndStation(List<StationDto> list) {
 
-        stationFragment = new BusStationViewPagerFragment(list);
+        stationFragment = new StationBusFragment(list);
         stationFragment.setCallbacks(this);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -580,7 +576,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void showRouteInstruction(List<RecommendRoutesDto> list) {
-        routeFragment = new RouteInstructionViewPagerFragment(list);
+        routeFragment = new RouteInstructionFragment(list);
         routeFragment.setCallbacks(this);
         getSupportFragmentManager()
                 .beginTransaction()

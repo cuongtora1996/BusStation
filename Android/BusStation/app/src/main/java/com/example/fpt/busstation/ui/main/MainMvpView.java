@@ -1,10 +1,8 @@
 package com.example.fpt.busstation.ui.main;
 
 import com.example.fpt.busstation.ui.base.BaseMvpView;
-import com.example.fpt.busstation.ui.behaviorbottom.BusStationViewPagerFragment;
-import com.example.fpt.busstation.ui.behaviorbottom.RouteInstructionViewPagerFragment;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.RecommendRoutesDto;
-import com.example.fpt.busstation.ui.behaviorbottom.dto.StationDto;
+import com.example.fpt.busstation.data.db.RecommendRoutesDto;
+import com.example.fpt.busstation.data.db.StationDto;
 
 import java.util.List;
 
