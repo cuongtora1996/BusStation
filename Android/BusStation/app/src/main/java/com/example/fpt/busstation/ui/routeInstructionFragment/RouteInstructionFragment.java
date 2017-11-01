@@ -110,13 +110,10 @@ public class RouteInstructionFragment extends BaseFragment implements RecommendR
             tabLayout.getTabAt(i).setCustomView(tab);
         }
 
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
-                    viewPager.setCurrentItem(tab.getPosition());
-
+                viewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
@@ -130,8 +127,6 @@ public class RouteInstructionFragment extends BaseFragment implements RecommendR
             }
         });
         LinearLayout tabStrip = ((LinearLayout) tabLayout.getChildAt(0));
-
-
         tabStrip.getChildAt(1).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -148,4 +143,7 @@ public class RouteInstructionFragment extends BaseFragment implements RecommendR
     }
 
 
+    public void changeToInstructionTab() {
+        viewPager.setCurrentItem(1);
+    }
 }
