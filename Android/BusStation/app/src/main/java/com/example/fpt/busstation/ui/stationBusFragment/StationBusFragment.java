@@ -102,6 +102,7 @@ public class StationBusFragment extends BaseFragment implements StationFragment.
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                callbacks.showBottomSheetCB();
             }
 
             @Override
@@ -131,5 +132,6 @@ public class StationBusFragment extends BaseFragment implements StationFragment.
         busFragment.changeBusCross(getStationDtoList().get(position).getListBus());
         viewPager.setCurrentItem(1);
         callbacks.moveToMarkerAndShowInfo(position);
+        callbacks.drawWalkingRouteCB(position);
     }
 }

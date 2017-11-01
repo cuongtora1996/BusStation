@@ -11,4 +11,6 @@ import java.util.List;
 public interface MainActivityCallbacks {
     void drawRouteCB(List<Object> instruction);
     void moveToMarkerAndShowInfo(int position);
+    void showBottomSheetCB();
+    void drawWalkingRouteCB(int position);
 }

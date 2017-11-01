@@ -146,6 +146,7 @@ public abstract class BaseRestClient {
             public void onResponse(String response) {
                 if (listener != null) {
                     listener.onResponse(response);
+
                 }
             }
         }, new Response.ErrorListener() {
@@ -157,7 +158,7 @@ public abstract class BaseRestClient {
         }){
             @Override
             public String getUrl() {
-                Log.d("Here","GetURl");
+
                 StringBuilder stringBuilder = new StringBuilder(URL_STRING_REQ);
                 int i = 1;
                 for (Map.Entry<String,String> entry: params.entrySet()) {
@@ -178,7 +179,7 @@ public abstract class BaseRestClient {
 
                 }
                 String url = stringBuilder.toString();
-
+                Log.d("URL",url);
                 return url;
             }
         };

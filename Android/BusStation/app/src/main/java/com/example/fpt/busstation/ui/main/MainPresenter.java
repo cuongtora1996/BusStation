@@ -9,17 +9,21 @@ import android.util.Log;
 
 import com.android.volley.VolleyError;
 import com.example.fpt.busstation.data.conn.RestClient;
+import com.example.fpt.busstation.data.conn.request.DirectionRequest;
 import com.example.fpt.busstation.data.conn.request.IntentRequest;
 import com.example.fpt.busstation.data.conn.request.RouteRequest;
 import com.example.fpt.busstation.data.conn.request.StationRequest;
+import com.example.fpt.busstation.data.conn.response.DirectionResponse;
 import com.example.fpt.busstation.data.conn.response.IntentResponse;
 import com.example.fpt.busstation.data.conn.response.RouteResponse;
 import com.example.fpt.busstation.data.conn.response.StationResponse;
+import com.example.fpt.busstation.data.db.DirectionDTO;
 import com.example.fpt.busstation.data.db.IntentDTO;
 import com.example.fpt.busstation.service.OnResponseStringListener;
 import com.example.fpt.busstation.ui.base.BasePresenter;
 import com.example.fpt.busstation.data.db.RecommendRoutesDto;
 import com.example.fpt.busstation.data.db.StationDto;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +47,7 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
 
 
     @Override
-    public void sendDetectRequest(final Double lng, final Double lat, String text) {
+    public void sendDetectRequest(final Double lat, final Double lng, String text) {
         Log.d("Send request", "test");
         IntentRequest.sendGetRequest(text, new OnResponseStringListener() {
             @Override
@@ -51,7 +55,8 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
                 try {
                     IntentDTO dto = IntentResponse.convertData(data);
 
-                    sendTTSRequest("Xác nhận " + dto.getMess());
+                    //sendTTSRequest("Xác nhận " + dto.getMess());
+                    Log.d("Type",dto.getType()+"");
                     switch (dto.getType()) {
                         case 1:
                             sendStationRequest(lng, lat, "", dto.getType());
@@ -126,7 +131,23 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
             }
         });
     }
+    @Override
+    public void sendDirectionWalkingRequest(LatLng from, LatLng to){
+        DirectionRequest.sendGetRequest(from, to, new OnResponseStringListener() {
+            @Override
+            public void onResponse(String data) {
+                List<DirectionDTO> result = DirectionResponse.convertData(data);
+                for(DirectionDTO dto : result){
+                    getMvpView().drawWalkingRoute(dto.getPoints());
+                }
+            }
 
+            @Override
+            public void onError(VolleyError error) {
+
+            }
+        });
+    }
     @Override
     public void sendTTSRequest(String text) {
         Log.d("String text", text);

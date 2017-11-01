@@ -2,6 +2,8 @@ package com.example.fpt.busstation.data.conn.request;
 
 import android.util.Log;
 
+import com.example.fpt.busstation.data.conn.ApiContansts;
+import com.example.fpt.busstation.data.conn.ApiURL;
 import com.example.fpt.busstation.data.conn.RestClient;
 import com.example.fpt.busstation.service.OnResponseStringListener;
 
@@ -24,6 +26,7 @@ public class IntentRequest {
         param.put("type",8+"");
         param.put("msg",msg);
         Log.d(TAG, param.toString());
-        RestClient.getInstance().getRequest("http://192.168.1.129:81/voicebus/api.php",param,listener);
+        Log.d(TAG,ApiURL.getDomain());
+        RestClient.getInstance().getRequest(ApiURL.getDomain(),param,listener);
     }
 }

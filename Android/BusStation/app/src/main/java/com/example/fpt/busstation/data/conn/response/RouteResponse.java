@@ -30,6 +30,7 @@ public class RouteResponse {
         Log.d("===convertData", "data: " + data.length());
         if (data != null) {
             recommendRoutesDtoList = new ArrayList<>();
+
             JSONArray recommendRoutes = null;
             try {
                 recommendRoutes = new JSONArray(data);
