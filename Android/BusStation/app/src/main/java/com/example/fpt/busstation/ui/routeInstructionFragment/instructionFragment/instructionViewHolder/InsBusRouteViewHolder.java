@@ -34,16 +34,6 @@ public class InsBusRouteViewHolder extends BaseRcvViewHolder {
     public void bindItem(final BaseRcvAdapter.OnItemListener listener, final Object item, final int position) {
         BusRouteInstructionDto dto = (BusRouteInstructionDto) item;
         tvTitle.setText("Đi tuyến xe số " + dto.getBusNum());
-//        List<RouteDto> routeDtos = dto.getRouteDto();
-//
-//        String fromStation = "", toStation = "";
-//        if (routeDtos.get(0).getType() == 1) {
-//            fromStation = routeDtos.get(0).getName() + " - ";
-//        }
-//        if (routeDtos.get(routeDtos.size() - 1).getType() == 1) {
-//            toStation = routeDtos.get(routeDtos.size() - 1).getName();
-//        }
-        //updated - FIXME Vi
         List<CoordDto> stations = dto.getStations();
         String fromStation = "", toStation = "";
         fromStation = stations.get(0).getName();

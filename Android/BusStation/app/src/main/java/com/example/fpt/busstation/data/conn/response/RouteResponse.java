@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.fpt.busstation.data.conn.ApiContansts;
 import com.example.fpt.busstation.data.db.BusRouteInstructionDto;
+import com.example.fpt.busstation.data.db.BusTransferInstructionDto;
 import com.example.fpt.busstation.data.db.CoordDto;
 import com.example.fpt.busstation.data.db.PointDto;
 import com.example.fpt.busstation.data.db.RecommendRoutesDto;
@@ -38,15 +39,17 @@ public class RouteResponse {
                         RecommendRoutesDto recommendRoutesDto = new RecommendRoutesDto();
                         recommendRoutesDto.setDuration(recommendRoute.getDouble(ApiContansts.KEY_DURATION));
                         recommendRoutesDto.setListBusNo(recommendRoute.getString(ApiContansts.KEY_LISTBUS));
-                        String[] listBusNo = recommendRoute.getString(ApiContansts.KEY_LISTBUS).split(",");
-                        Log.d("listBusNoArray", listBusNo[0]);
+                        String listBusNo = recommendRoute.getString(ApiContansts.KEY_LISTBUS);
                         recommendRoutesDto.setTotalBus(recommendRoute.getInt(ApiContansts.KEY_TOTALBUS));
+                        recommendRoutesDto.setListBusNo(listBusNo);
+                        Log.d("??? total bus: ", "" + recommendRoute.getInt(ApiContansts.KEY_TOTALBUS));
                         recommendRoutesDto.setRecommendRouteId(recommendRoutesDto.generateRouteName());
 
                         List<Object> listInstruction = new ArrayList<>();
                         JSONArray arrayInstructions = recommendRoute.getJSONArray(ApiContansts.KEY_INSTRUCTION);
                         if (arrayInstructions.length() > 0) {
                             int count = 0;
+                            String[] listBus = listBusNo.split(",");
                             for (int j = 0; j < arrayInstructions.length(); j++) {
                                 JSONObject jsonInstruction = arrayInstructions.getJSONObject(j);
                                 int typeIntruction = jsonInstruction.getInt(ApiContansts.KEY_TYPE);
@@ -58,8 +61,8 @@ public class RouteResponse {
                                         walk.setEndType(jsonInstruction.getInt(ApiContansts.KEY_ENDTYPE));
                                         walk.setDuration(jsonInstruction.getDouble(ApiContansts.KEY_DURATION));
                                         walk.setDistance(jsonInstruction.getDouble(ApiContansts.KEY_DISTANCE));
-                                        if (count < listBusNo.length)
-                                            walk.setToBus(Integer.parseInt(listBusNo[count].trim()));
+                                        if (count < listBus.length)
+                                            walk.setToBus(Integer.parseInt(listBus[count].trim()));
                                         count++;
                                         CoordDto bCoord = new CoordDto();
                                         JSONObject beginCoord = jsonInstruction.getJSONObject(ApiContansts.KEY_BEGINCOORD);
@@ -76,21 +79,19 @@ public class RouteResponse {
                                         listInstruction.add(walk);
                                         break;
                                     case 3:
-                                        WalkInstructionDto change = new WalkInstructionDto();
+                                        BusTransferInstructionDto change = new BusTransferInstructionDto();
                                         change.setType(typeIntruction);
-                                        change.setDuration(jsonInstruction.getDouble(ApiContansts.KEY_DURATION));
-                                        change.setDistance(jsonInstruction.getDouble(ApiContansts.KEY_DISTANCE));
-                                        if (count < listBusNo.length) {
-                                            change.setToBus(Integer.parseInt(listBusNo[count].trim()));
-                                            change.setFromBus(Integer.parseInt(listBusNo[count - 1].trim()));
+                                        if (count < listBus.length) {
+                                            change.setToBus(Integer.parseInt(listBus[count].trim()));
+                                            change.setFromBus(Integer.parseInt(listBus[count - 1].trim()));
                                         }
                                         count++;
-                                        CoordDto cCoord = new CoordDto();
-                                        JSONObject changeCoord = jsonInstruction.getJSONObject(ApiContansts.KEY_BEGINCOORD);
-                                        cCoord.setLat(changeCoord.getDouble(ApiContansts.KEY_LAT));
-                                        cCoord.setLng(changeCoord.getDouble(ApiContansts.KEY_LNG));
-                                        cCoord.setName(changeCoord.getString(ApiContansts.KEY_NAME));
-                                        change.setBeginCoord(cCoord);
+                                        CoordDto changeCoord = new CoordDto();
+                                        JSONObject cCoord = jsonInstruction.getJSONObject(ApiContansts.KEY_CHANGECOORD);
+                                        changeCoord.setLat(cCoord.getDouble(ApiContansts.KEY_LAT));
+                                        changeCoord.setLng(cCoord.getDouble(ApiContansts.KEY_LNG));
+                                        changeCoord.setName(cCoord.getString(ApiContansts.KEY_NAME));
+                                        change.setChangeCoord(changeCoord);
                                         listInstruction.add(change);
                                         break;
                                     case 2:
