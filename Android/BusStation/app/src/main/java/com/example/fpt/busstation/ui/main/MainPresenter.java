@@ -40,22 +40,26 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
     private MediaRecorder mediaRecorder;
     private static final int PERMISSION_AUDIO = 2;
     private static final String AudioSavePathInDevice = Environment.getExternalStorageDirectory().getAbsolutePath() + "/voiceRecord.3gp";
-
+    private boolean flag_block_media=false;
     public MainPresenter() {
+
+
         super();
+
     }
 
 
     @Override
     public void sendDetectRequest(final Double lat, final Double lng, String text) {
         Log.d("Send request", "test");
+        getMvpView().showLoading();
         IntentRequest.sendGetRequest(text, new OnResponseStringListener() {
             @Override
             public void onResponse(String data) {
                 try {
                     IntentDTO dto = IntentResponse.convertData(data);
 
-                    //sendTTSRequest("Xác nhận " + dto.getMess());
+
                     Log.d("Type",dto.getType()+"");
                     switch (dto.getType()) {
                         case 1:
@@ -92,15 +96,21 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
     }
 
     @Override
-    public void sendRouteRequest(Double lng, Double lat, String begin, String end, int type) {
+    public void sendRouteRequest(Double lng, Double lat, String begin, String end, final int type) {
 
         RouteRequest.sendGetRequest(lng, lat, begin, end, type, new OnResponseStringListener() {
             @Override
             public void onResponse(String data) {
                 List<RecommendRoutesDto> result = RouteResponse.convertData(data);
-                Log.d("===convertData", "size: " + result.size());
-                getMvpView().removeAllMarkerAndPolyline();
-                getMvpView().showRouteInstruction(result);
+                if(result.size()!=0) {
+
+                    getMvpView().removeAllMarkerAndPolyline();
+                    getMvpView().showRouteInstruction(result, type == 6);
+                }
+                else{
+                    sendTTSRequest("Không tìm thấy đường đi");
+                }
+                getMvpView().hideLoading();
             }
 
             @Override
@@ -117,12 +127,17 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
             @Override
             public void onResponse(String data) {
                 List<StationDto> result = StationResponse.convertData(data);
-                getMvpView().removeAllMarkerAndPolyline();
-                for (int i = 0; i < result.size(); i++) {
-                    StationDto dto = result.get(i);
-                    getMvpView().placeStation(dto.getLng(), dto.getLat(), dto.getStationAddress(), dto.getStationName(), i);
+                if(result.size()!=0) {
+                    getMvpView().removeAllMarkerAndPolyline();
+                    for (int i = 0; i < result.size(); i++) {
+                        StationDto dto = result.get(i);
+                        getMvpView().placeStation(dto.getLng(), dto.getLat(), dto.getStationAddress(), dto.getStationName(), i);
+                    }
+                    getMvpView().showBusAndStation(result);
+                }else{
+                    sendTTSRequest("Không tìm thấy trạm");
                 }
-                getMvpView().showBusAndStation(result);
+                getMvpView().hideLoading();
             }
 
             @Override
@@ -151,23 +166,36 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
     @Override
     public void sendTTSRequest(String text) {
         Log.d("String text", text);
+
         RestClient.getInstance().postAudioRequest("http://api.openfpt.vn/text2speech/v4", text, new OnResponseStringListener() {
             @Override
             public void onResponse(String data) {
                 try {
+
                     JSONObject jsonObject = new JSONObject(data);
                     int success = jsonObject.getInt("error");
                     if (success == 0) {
                         String url = jsonObject.getString("async");
-                        try {
-                            MediaPlayer player = new MediaPlayer();
-                            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                            player.setDataSource(url);
-                            player.prepare();
-                            player.start();
-                        } catch (Exception e) {
 
+                        mediaPlayer = new MediaPlayer();
+                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                mediaPlayer.stop();
+                                mediaPlayer.release();
+
+                            }
+                        });
+
+                        try {
+                            mediaPlayer.setDataSource(url);
+                            mediaPlayer.prepare();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                        mediaPlayer.start();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

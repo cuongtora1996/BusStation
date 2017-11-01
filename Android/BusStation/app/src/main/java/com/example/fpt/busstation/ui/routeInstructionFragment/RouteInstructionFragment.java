@@ -113,10 +113,8 @@ public class RouteInstructionFragment extends BaseFragment implements RecommendR
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
-
                 viewPager.setCurrentItem(tab.getPosition());
-
+                callbacks.showBottomSheetCB();
             }
 
             @Override
