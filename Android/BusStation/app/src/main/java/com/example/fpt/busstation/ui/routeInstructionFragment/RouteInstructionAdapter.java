@@ -16,18 +16,13 @@ import java.util.List;
 
 public class RouteInstructionAdapter extends FragmentStatePagerAdapter {
     private int mTabCount;
-    private RecommendRoutesFragment recommendRoutesFragment;
-    private InstructionFragment instructionFragment;
+ //   private RecommendRoutesFragment recommendRoutesFragment;
+  //  private InstructionFragment instructionFragment;
     private final List<Fragment> fragmentList = new ArrayList<>();
     private final List<String> fragmentTitleList = new ArrayList<>();
 
 
-    public RouteInstructionAdapter(FragmentManager fragmentManager, RecommendRoutesFragment recommendRoutesFragment, InstructionFragment instructionFragment) {
-        super(fragmentManager);
-        this.mTabCount = 0;
-        this.recommendRoutesFragment = recommendRoutesFragment;
-        this.instructionFragment = instructionFragment;
-    }
+
 
     public RouteInstructionAdapter(FragmentManager fm) {
         super(fm);
@@ -44,7 +39,7 @@ public class RouteInstructionAdapter extends FragmentStatePagerAdapter {
 
     }
 
-    public void setCount(int mTabCount) {
+    public void setTabCount(int mTabCount) {
         this.mTabCount = mTabCount;
     }
 

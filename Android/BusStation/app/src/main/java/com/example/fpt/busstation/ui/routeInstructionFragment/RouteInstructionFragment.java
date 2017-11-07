@@ -26,7 +26,6 @@ import java.util.List;
 
 public class RouteInstructionFragment extends BaseFragment implements RecommendRoutesFragment.Callback {
     CustomViewPager viewPager;
-    RouteInstructionAdapter pagerAdapter;
     TabLayout tabLayout;
     RecommendRoutesFragment recommendRoutesFragment;
     InstructionFragment instructionFragment;
@@ -94,7 +93,7 @@ public class RouteInstructionFragment extends BaseFragment implements RecommendR
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        StationBusAdapter adapter = new StationBusAdapter(getChildFragmentManager());
+        RouteInstructionAdapter adapter = new RouteInstructionAdapter(getChildFragmentManager());
         adapter.addFragment(recommendRoutesFragment, "Lộ trình");
         adapter.addFragment(instructionFragment, "Cách đi");
         adapter.setTabCount(NUMBER_TAB);

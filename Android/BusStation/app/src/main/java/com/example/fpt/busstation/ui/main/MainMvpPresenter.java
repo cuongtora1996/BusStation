@@ -12,9 +12,9 @@ import com.google.android.gms.maps.model.LatLng;
 public interface MainMvpPresenter<T extends MainMvpView> extends BaseMvpPresenter<T> {
     void startRecordAudio();
     void stopRecordAudio();
-    void sendTTSRequest(String text);
-    void sendRouteRequest(Double lng, Double lat,String begin, String end,int type);
-    void sendStationRequest(Double lng, Double lat, String number, int type);
+    //void sendTTSRequest(String text);
+    //void sendRouteRequest(Double lng, Double lat,String begin, String end,int type);
+    //void sendStationRequest(Double lng, Double lat, String number, int type);
     void sendDetectRequest(Double lng, Double lat,String text);
     void sendDirectionWalkingRequest(LatLng from, LatLng to);
 }

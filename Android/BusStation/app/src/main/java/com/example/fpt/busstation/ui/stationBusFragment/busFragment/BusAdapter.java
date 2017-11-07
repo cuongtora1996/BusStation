@@ -44,10 +44,6 @@ public class BusAdapter extends BaseRcvAdapter {
         return 0;
     }
 
-    public void addItems(List<BusDto> listBus) {
-        this.lstBus.addAll(listBus);
-        notifyDataSetChanged();
-    }
 
     public void changeItems(List<BusDto> busDtoList) {
         lstBus = busDtoList;

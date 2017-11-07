@@ -95,7 +95,7 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
         });
     }
 
-    @Override
+    //@Override
     public void sendRouteRequest(Double lng, Double lat, String begin, String end, final int type) {
 
         RouteRequest.sendGetRequest(lng, lat, begin, end, type, new OnResponseStringListener() {
@@ -120,7 +120,7 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
         });
     }
 
-    @Override
+    //@Override
     public void sendStationRequest(Double lng, Double lat, String number, int type) {
 
         StationRequest.sendGetRequest(lng, lat, number, type, new OnResponseStringListener() {
@@ -163,7 +163,7 @@ public class MainPresenter<T extends MainMvpView> extends BasePresenter<T> imple
             }
         });
     }
-    @Override
+    //@Override
     public void sendTTSRequest(String text) {
         Log.d("String text", text);
 
