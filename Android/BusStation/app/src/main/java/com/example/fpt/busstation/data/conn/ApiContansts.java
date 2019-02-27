@@ -7,7 +7,7 @@ package com.example.fpt.busstation.data.conn;
 public class ApiContansts {
     public final static String URL_ROOT = "192.168.137.51";
     public final static String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json";
-    public final static String GOOGLE_API_KEY ="AIzaSyA2slThOI8Qecwxo0qL5aENOcCq6iuw6fA";
+    public final static String GOOGLE_API_KEY ="";
     public final static String KEY_DISTANCE = "distance";
     public final static String KEY_DURATION = "duration";
     public final static String KEY_TOTALBUS = "totalBus";
